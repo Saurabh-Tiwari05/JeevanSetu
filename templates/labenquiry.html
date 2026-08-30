@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lab Enquiry</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: Arial, sans-serif; background-color: #f0f4ff; }
+    header { background-color: #3f51b5; color: white; padding: 1rem; text-align: center; font-size: 1.5rem; position: sticky; top: 0; }
+    .search-container { display: flex; align-items: center; justify-content: center; background-color: #e8eaf6; padding: 0.8rem; }
+    .search-container input { width: 80%; padding: 0.6rem; border-radius: 0.5rem; border: 1px solid #ccc; font-size: 1rem; }
+    .lab-list { padding: 1rem; }
+    .lab-item { background-color: white; border-radius: 0.5rem; margin-bottom: 0.8rem; padding: 0.8rem; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; }
+    .lab-info { max-width: 80%; }
+    .lab-info p { margin: 0.2rem 0; }
+    .lab-info .test-name { font-weight: bold; }
+    .lab-price { font-weight: bold; font-size: 1.2rem; color: #0288d1; }
+  </style>
+</head>
+<body>
+
+  <header>Lab Enquiry</header>
+
+  <div class="search-container">
+    <input type="text" id="searchInput" placeholder="Search by test name...">
+  </div>
+
+  <div class="lab-list" id="labList">
+    <!-- Entries will be injected here by JavaScript -->
+  </div>
+
+  <script>
+    const labTests = [
+      { name: "Beta D Glucan Elisa", lab: "Mycology", price: 2000 },
+      { name: "24 Hour Urinary Amylase", lab: "Urine Chemistry", price: 25 },
+      { name: "24 Hour Urinary Calcium", lab: "Urine Chemistry", price: 25 },
+      { name: "24 Hour Urinary Chloride", lab: "Urine Chemistry", price: 25 },
+      { name: "24 Hour Urinary Creatinine", lab: "Urine Chemistry", price: 25 },
+      { name: "24 Hour Urinary Glucose", lab: "Urine Chemistry", price: 10 },
+      { name: "24 Hour Urinary Magnesium", lab: "Urine Chemistry", price: 25 },
+      { name: "Complete Blood Count (CBC)", lab: "Hematology", price: 300 },
+      { name: "Liver Function Test (LFT)", lab: "Biochemistry", price: 500 },
+      { name: "Kidney Function Test (KFT)", lab: "Biochemistry", price: 450 },
+      { name: "Blood Sugar Fasting", lab: "Biochemistry", price: 150 },
+      { name: "Blood Sugar PP", lab: "Biochemistry", price: 150 },
+      { name: "HbA1c", lab: "Biochemistry", price: 600 },
+      { name: "Thyroid Profile (T3, T4, TSH)", lab: "Endocrinology", price: 700 },
+      { name: "Lipid Profile", lab: "Biochemistry", price: 800 },
+      { name: "Electrolytes (Na, K, Cl)", lab: "Biochemistry", price: 400 },
+      { name: "CRP", lab: "Immunology", price: 350 },
+      { name: "HIV 1&2", lab: "Virology", price: 500 },
+      { name: "Hepatitis B (HBsAg)", lab: "Virology", price: 450 },
+      { name: "Hepatitis C (Anti-HCV)", lab: "Virology", price: 450 },
+      { name: "Urine Routine", lab: "Urine Chemistry", price: 100 },
+      { name: "Stool Routine", lab: "Microbiology", price: 120 },
+      { name: "Widal Test", lab: "Microbiology", price: 300 },
+      { name: "Malaria Parasite (MP)", lab: "Parasitology", price: 250 },
+      { name: "Dengue NS1", lab: "Virology", price: 800 },
+      { name: "Dengue IgG/IgM", lab: "Virology", price: 900 },
+      { name: "Typhoid IgM", lab: "Microbiology", price: 400 },
+      { name: "Blood Grouping & Rh Typing", lab: "Blood Bank", price: 250 },
+      { name: "Prothrombin Time (PT)", lab: "Hematology", price: 350 },
+      { name: "APTT", lab: "Hematology", price: 400 },
+      { name: "D-Dimer", lab: "Hematology", price: 1200 },
+      { name: "Ferritin", lab: "Biochemistry", price: 600 },
+      { name: "Vitamin D", lab: "Biochemistry", price: 1200 },
+      { name: "Vitamin B12", lab: "Biochemistry", price: 900 },
+      { name: "HLA B27", lab: "Immunology", price: 2200 },
+      { name: "ANA (IFA)", lab: "Immunology", price: 1800 },
+      { name: "Rheumatoid Factor (RF)", lab: "Immunology", price: 400 },
+      { name: "PSA (Prostate Specific Antigen)", lab: "Biochemistry", price: 700 },
+      { name: "Beta HCG", lab: "Biochemistry", price: 800 },
+      { name: "Semen Analysis", lab: "Andrology", price: 500 },
+      { name: "TORCH Profile", lab: "Microbiology", price: 2500 },
+      { name: "Hepatitis A IgM", lab: "Virology", price: 600 },
+      { name: "Hepatitis E IgM", lab: "Virology", price: 600 },
+      { name: "Blood Culture", lab: "Microbiology", price: 1200 },
+      { name: "Throat Swab Culture", lab: "Microbiology", price: 600 },
+      { name: "Sputum AFB", lab: "Microbiology", price: 400 },
+      { name: "CSF Analysis", lab: "Pathology", price: 800 },
+      { name: "Bone Marrow Examination", lab: "Pathology", price: 3000 },
+      { name: "PTH (Parathyroid Hormone)", lab: "Endocrinology", price: 1500 },
+      { name: "Insulin Fasting", lab: "Endocrinology", price: 1000 },
+      { name: "Insulin Post Prandial", lab: "Endocrinology", price: 1000 },
+      { name: "Serum Calcium", lab: "Biochemistry", price: 150 },
+      { name: "Serum Phosphorus", lab: "Biochemistry", price: 150 },
+      { name: "Serum Albumin", lab: "Biochemistry", price: 200 },
+      { name: "Serum Globulin", lab: "Biochemistry", price: 200 },
+      { name: "Total Protein", lab: "Biochemistry", price: 250 },
+      { name: "LDH (Lactate Dehydrogenase)", lab: "Biochemistry", price: 400 },
+      { name: "CPK-MB", lab: "Biochemistry", price: 800 },
+      { name: "Troponin I", lab: "Biochemistry", price: 1200 },
+      { name: "Ammonia", lab: "Biochemistry", price: 600 },
+      { name: "Copper", lab: "Biochemistry", price: 900 },
+      { name: "Zinc", lab: "Biochemistry", price: 900 },
+      { name: "Lead", lab: "Toxicology", price: 1200 },
+      { name: "Arsenic", lab: "Toxicology", price: 1200 },
+      { name: "Mercury", lab: "Toxicology", price: 1200 },
+      { name: "Cadmium", lab: "Toxicology", price: 1200 },
+      { name: "Chromium", lab: "Toxicology", price: 1200 },
+      { name: "Nickel", lab: "Toxicology", price: 1200 },
+      { name: "Aluminium", lab: "Toxicology", price: 1200 },
+      { name: "Thallium", lab: "Toxicology", price: 1500 },
+      { name: "Hair Mineral Analysis", lab: "Toxicology", price: 2500 },
+      { name: "Skin Biopsy", lab: "Pathology", price: 3000 },
+      { name: "Lymph Node Biopsy", lab: "Pathology", price: 3000 },
+      { name: "Pap Smear", lab: "Pathology", price: 800 },
+      { name: "FNAC", lab: "Pathology", price: 1200 },
+      { name: "Hematocrit", lab: "Hematology", price: 250 },
+      { name: "ESR", lab: "Hematology", price: 150 },
+      { name: "Reticulocyte Count", lab: "Hematology", price: 300 },
+      { name: "Peripheral Smear", lab: "Hematology", price: 300 },
+      { name: "Bone Profile", lab: "Biochemistry", price: 1500 },
+      { name: "Coombs Test", lab: "Hematology", price: 600 },
+      { name: "Serum Iron", lab: "Biochemistry", price: 400 },
+      { name: "TIBC", lab: "Biochemistry", price: 350 },
+      { name: "Transferrin Saturation", lab: "Biochemistry", price: 400 },
+      { name: "Haptoglobin", lab: "Biochemistry", price: 900 },
+      { name: "Ceruloplasmin", lab: "Biochemistry", price: 1000 },
+      { name: "Amylase", lab: "Biochemistry", price: 600 },
+      { name: "Lipase", lab: "Biochemistry", price: 700 },
+      { name: "G6PD", lab: "Hematology", price: 500 },
+      { name: "PT-INR", lab: "Hematology", price: 400 },
+      { name: "Anti-CCP", lab: "Immunology", price: 1500 },
+      { name: "Anti-dsDNA", lab: "Immunology", price: 1200 },
+      { name: "C3", lab: "Immunology", price: 600 },
+      { name: "C4", lab: "Immunology", price: 600 },
+      { name: "Serum IgE", lab: "Immunology", price: 700 },
+      { name: "Allergy Panel", lab: "Immunology", price: 3000 },
+      { name: "Food Allergy Panel", lab: "Immunology", price: 3500 },
+    ];
+
+    const labList = document.getElementById('labList');
+    const searchInput = document.getElementById('searchInput');
+
+    function displayLabs(filteredLabs) {
+      labList.innerHTML = '';
+      filteredLabs.forEach(test => {
+        const labItem = document.createElement('div');
+        labItem.className = 'lab-item';
+        labItem.innerHTML = `
+          <div class="lab-info">
+            <p class="test-name">${test.name}</p>
+            <p>Lab Name: ${test.lab}</p>
+          </div>
+          <div class="lab-price">₹ ${test.price.toFixed(2)}</div>
+        `;
+        labList.appendChild(labItem);
+      });
+    }
+
+    displayLabs(labTests);
+
+    searchInput.addEventListener('input', (e) => {
+      const keyword = e.target.value.toLowerCase();
+      const filtered = labTests.filter(test => test.name.toLowerCase().includes(keyword));
+      displayLabs(filtered);
+    });
+  </script>
+
+</body>
+</html>

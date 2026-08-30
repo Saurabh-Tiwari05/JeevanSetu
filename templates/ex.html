@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Jeevan Setu Patient Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      display: flex;
+      background: linear-gradient(to right, #e6f0ff, #ffffff);
+      height: 100vh;
+      overflow: hidden;
+      transition: background 0.3s ease, color 0.3s ease; /* Added for smooth transition */
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 240px;
+      background: #003366;
+      color: white;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: 0.3s;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .sidebar.collapsed {
+      width: 70px;
+    }
+
+    .sidebar .logo {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      font-size: 1.5em;
+      font-weight: bold;
+      padding: 1.5rem 1rem;
+      background: #002244;
+      letter-spacing: 1px;
+    }
+
+    .logo img {
+      height: 40px;
+      width: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 1rem 0;
+    }
+
+    .sidebar ul li {
+      padding: 1rem 1.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: background 0.3s;
+    }
+
+    .sidebar ul li:hover, .sidebar ul li.active {
+      background: #005599;
+    }
+
+    .sidebar ul li i {
+      min-width: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    table, th, td {
+      border: 1px solid #ccc;
+      padding: 0.8rem;
+      text-align: left;
+    }
+
+    table th {
+      background-color: #003366;
+      color: white;
+    }
+
+    /* Top Navbar */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .navbar {
+      background: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      transition: background 0.3s ease, box-shadow 0.3s ease; /* Added for smooth transition */
+    }
+
+    .navbar .title {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: #003366;
+      transition: color 0.3s ease; /* Added for smooth transition */
+    }
+
+    .navbar .profile {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .navbar .profile i {
+      font-size: 1.3rem;
+      cursor: pointer;
+      color: #003366;
+      transition: color 0.3s ease; /* Added for smooth transition */
+    }
+
+    /* Content */
+    .content {
+      padding: 2rem;
+      overflow-y: auto;
+    }
+
+    .section {
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      border-radius: 15px;
+      background: rgba(255,255,255,0.8);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+      transition: 0.3s;
+    }
+
+    .section:hover {
+      transform: scale(1.01);
+    }
+
+    .section h2 {
+      color: #003366;
+      margin-bottom: 1rem;
+      transition: color 0.3s ease; /* Added for smooth transition */
+    }
+
+    .stats {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      flex: 1;
+      min-width: 150px;
+      background: #f0f8ff;
+      padding: 1rem;
+      border-radius: 12px;
+      color: #003366;
+      box-shadow: 0 0 8px rgba(0,0,0,0.05);
+      text-align: center;
+      transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease; /* Added for smooth transition */
+    }
+
+    .stat h3 {
+      font-size: 2rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .action-btn {
+      padding: 0.7rem 1.5rem;
+      background: #003366;
+      color: white;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .action-btn:hover {
+      background: #005599;
+    }
+
+    /* Dark Mode Styles */
+    body.dark-mode {
+      background: linear-gradient(to right, #333, #1a1a1a);
+      color: #eee;
+    }
+
+    body.dark-mode .sidebar {
+      background: #1a1a1a;
+    }
+
+    body.dark-mode .sidebar .logo {
+      background: #000;
+    }
+
+    body.dark-mode .sidebar ul li:hover,
+    body.dark-mode .sidebar ul li.active {
+      background: #333;
+    }
+
+    body.dark-mode .navbar {
+      background: #222;
+      box-shadow: 0 2px 5px rgba(255, 255, 255, 0.1);
+    }
+
+    body.dark-mode .navbar .title,
+    body.dark-mode .navbar .profile i {
+      color: #eee;
+    }
+
+    body.dark-mode .section {
+      background: rgba(40, 40, 40, 0.8);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    body.dark-mode .section h2 {
+      color: #eee;
+    }
+
+    body.dark-mode .stats .stat {
+      background: #2a2a2a;
+      color: #eee;
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
+    }
+
+    body.dark-mode .action-btn {
+      background: #555;
+      color: white;
+    }
+
+    body.dark-mode .action-btn:hover {
+      background: #777;
+    }
+
+    body.dark-mode table,
+    body.dark-mode th,
+    body.dark-mode td {
+      border: 1px solid #555;
+    }
+
+    body.dark-mode table th {
+      background-color: #333;
+      color: #eee;
+    }
+
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar" id="sidebar">
+    <div class="logo">
+      <img src="{{ url_for('static', filename='jeevan-setu-logo.png') }}" alt="Jeevan Setu Logo" />
+      <div class="logo-text">Jeevan Setu</div>
+    </div>
+    <ul>
+      <li id="dashboard" class="active" onclick="showDashboard()">
+        <i class="fas fa-home"></i> Dashboard
+      </li>
+      <li id="profile" onclick="showProfile()">
+        <i class="fas fa-id-card"></i> Profile
+      </li>
+      <li id="appointments" onclick="showAppointments()">
+        <i class="fas fa-calendar-alt"></i> Appointments
+      </li>
+      <li id="pharmacy">
+        <a href="{{ url_for('pharmacy') }}" style="text-decoration: none; color: inherit;">
+          <i class="fas fa-capsules"></i> Pharmacy
+        </a>
+      </li>    
+      <li id="opd">
+        <a href="{{ url_for('opd') }}" style="text-decoration: none; color: inherit;">
+        <i class="fas fa-prescription-bottle-alt"></i> OPD Enquiry
+      </a>
+      </li>
+      <li id="lab-reports" onclick="showLabReports()">
+        <i class="fas fa-microscope"></i> Lab Reports
+      </li>
+      <li id="tariffdetail"><a href="{{ url_for('tariffdetail') }}" style="text-decoration: none; color: inherit;">
+        <i class="fas fa-bell"></i> Tariff Details</a>
+      </li>
+      <li id="billing"><a href="{{ url_for('billing') }}" style="text-decoration: none; color: inherit;">
+        <i class="fas fa-credit-card"></i> Billing</a>
+      </li>
+      <li id="medicine"><a href="{{ url_for('labenquiry') }}" style="text-decoration: none; color: inherit;">
+        <i class="fas fa-notes-medical"></i> Lab Enquiry
+      </li>
+      <li id="help_chatbot">
+        <a href="{{ url_for('help_chatbot') }}" style="text-decoration: none; color: inherit;">
+          <i class="fas fa-robot"></i> Help-Chatbot
+        </a>
+      </li>
+      
+      <li id="hospitalinfo">
+        <a href="{{ url_for('hospitalinfo') }}" style="text-decoration: none; color: inherit;">
+        <i class="fas fa-cogs"></i> Hospital Info
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="main">
+    <div class="navbar">
+      <div class="title">Welcome to Your Dashboard</div>
+      <div class="profile">
+        <button id="theme-toggle" class="action-btn">
+          <i class="fas fa-moon"></i> </button>
+        <i class="fas fa-user-circle"></i>
+        <i class="fas fa-sign-out-alt" title="Logout"></i>
+      </div>
+    </div>
+
+    <div class="content" id="content">
+      <div class="section">
+        <h2>Your Health Stats</h2>
+        <div class="stats">
+          <div class="stat"><h3>3</h3>Upcoming Appointments</div>
+          <div class="stat"><h3>5</h3>Active Prescriptions</div>
+          <div class="stat"><h3>2</h3>Lab Reports</div>
+          <div class="stat"><h3>1</h3>Pending Bills</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Quick Actions</h2>
+        <div class="actions">
+          <button class="action-btn" onclick="window.location.href='/book_appointment'">Book Appointment</button>
+          <a href="/pharmacy" class="action-btn">Pharmacy</a>
+          <a href="/patient/id_card" class="action-btn">View ID Card</a>
+          <a href="/abhaa" class="action-btn">ABHA Account</a>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Live Hospital Queue</h2>
+        <p>Real-time updates of your token status in OPD, pharmacy, and billing queues will appear here.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Theme Toggle
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const body = document.body;
+    const themeIcon = themeToggleBtn.querySelector('i'); // Get the icon element
+
+    // Function to set the theme and update the icon
+    function setTheme(theme) {
+      if (theme === 'dark-mode') {
+        body.classList.add('dark-mode');
+        themeIcon.classList.remove('fa-moon');
+        themeIcon.classList.add('fa-sun'); // Show sun in dark mode
+      } else {
+        body.classList.remove('dark-mode');
+        themeIcon.classList.remove('fa-sun');
+        themeIcon.classList.add('fa-moon'); // Show moon in light mode
+      }
+      localStorage.setItem('theme', theme);
+    }
+
+    // Check for saved theme preference on load
+    const currentTheme = localStorage.getItem('theme');
+    if (currentTheme) {
+      setTheme(currentTheme);
+    } else {
+      setTheme(''); // Default to light mode (moon icon)
+    }
+
+    // Toggle theme on button click
+    themeToggleBtn.addEventListener('click', () => {
+      if (body.classList.contains('dark-mode')) {
+        setTheme(''); // Switch to light mode
+      } else {
+        setTheme('dark-mode'); // Switch to dark mode
+      }
+    });
+
+
+    function showDashboard() {
+        location.reload();
+    }
+
+    function showComingSoon(section) {
+      const contentDiv = document.getElementById('content');
+      const sidebarItems = document.querySelectorAll('.sidebar ul li');
+      sidebarItems.forEach(item => item.classList.remove('active'));
+      document.getElementById(section.toLowerCase().replace(/ /g, "-")).classList.add('active');
+
+      contentDiv.innerHTML = `
+        <div class="section">
+          <h2>${section}</h2>
+          <p>This section is coming soon.</p>
+        </div>
+      `;
+    }
+
+    function showProfile() {
+      const contentDiv = document.getElementById('content');
+      const sidebarItems = document.querySelectorAll('.sidebar ul li');
+      sidebarItems.forEach(item => item.classList.remove('active'));
+      document.getElementById('profile').classList.add('active');
+
+      fetch('/patient/profile')
+        .then(response => response.json())
+        .then(data => {
+          if (data.error) {
+            contentDiv.innerHTML = <div class="section"><h2>Profile</h2><p>${data.error}</p></div>;
+          } else {
+            contentDiv.innerHTML = `
+              <div class="section">
+                <h2>Patient Profile</h2>
+                <table>
+                  <tr><th>Patient ID</th><td>${data.user_id}</td></tr>
+                  <tr><th>Full Name</th><td>${data.full_name}</td></tr>
+                  <tr><th>Aadhaar Card</th><td>${data.aadhaar_card}</td></tr>
+                  <tr><th>Date of Birth</th><td>${data.dob}</td></tr>
+                  <tr><th>Phone Number</th><td>${data.phone_number}</td></tr>
+                  <tr><th>Email</th><td>${data.email}</td></tr>
+                  <tr><th>Address</th><td>${data.address}</td></tr>
+                </table>
+              </div>
+            `;
+          }
+        })
+        .catch(error => {
+          contentDiv.innerHTML = <div class="section"><h2>Profile</h2><p>Error loading profile.</p></div>;
+          console.error('Error fetching profile:', error);
+        });
+    }
+
+function showAppointments() {
+  const contentDiv = document.getElementById('content');
+  const sidebarItems = document.querySelectorAll('.sidebar ul li');
+  sidebarItems.forEach(item => item.classList.remove('active'));
+  document.getElementById('appointments').classList.add('active');
+
+  contentDiv.innerHTML = '';
+  const existingForm = document.getElementById('reschedule-form');
+  if (existingForm) existingForm.remove();
+
+  fetch('/patient/appointments')
+    .then(response => response.json())
+    .then(data => {
+      if (!Array.isArray(data) || data.length === 0) {
+        contentDiv.innerHTML = `
+          <div class="section">
+            <h2>Your Appointments</h2>
+            <p>No appointments found.</p>
+          </div>
+        `;
+      } else {
+        let rows = data.map(app => {
+          let actions = '';
+
+          if (app.status !== 'Cancelled') {
+            if (app.status === 'Pending' || app.status === 'Rejected') {
+              actions += <button class="reschedule-btn" onclick="showRescheduleForm('${app.appointment_id}')" style="background-color: #007bff; color: white; border: none; padding: 5px 10px; margin-right: 5px; cursor: pointer;">Reschedule</button>;
+            }
+            if (app.status === 'Pending' || app.status === 'Confirmed') {
+              actions += <button class="cancel-btn" onclick="cancelAppointment('${app.appointment_id}')" style="background-color: #dc3545; color: white; border: none; padding: 5px 10px; cursor: pointer;">Cancel</button>;
+            }
+          } else {
+            actions = <span style="color: grey; font-style: italic;">No actions</span>;
+          }
+
+          return `
+            <tr>
+              <td>${app.appointment_id}</td>
+              <td>${app.doctor_name}</td>
+              <td>${app.specialization}</td>
+              <td>${app.hospital_name}</td>
+              <td>${app.date || '—'}</td>
+              <td>${app.time || '—'}</td>
+              <td>${app.status}</td>
+              <td>${actions}</td>
+            </tr>
+          `;
+        }).join("");
+
+        contentDiv.innerHTML = `
+          <div class="section">
+            <h2>Your Appointments</h2>
+            <table>
+              <tr>
+                <th>ID</th>
+                <th>Doctor</th>
+                <th>Specialization</th>
+                <th>Hospital</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+              ${rows}
+            </table>
+            <div id="reschedule-form" style="margin-top: 20px;"></div>
+          </div>
+        `;
+      }
+    })
+    .catch(error => {
+      contentDiv.innerHTML = `
+        <div class="section">
+          <h2>Your Appointments</h2>
+          <p>Error fetching appointments.</p>
+        </div>
+      `;
+      console.error('Error fetching appointments:', error);
+    });
+}
+
+function showRescheduleForm(appointmentId) {
+  const formDiv = document.getElementById('reschedule-form');
+  formDiv.innerHTML = `
+    <h3>Reschedule Appointment #${appointmentId}</h3>
+    <form id="reschedule-form-element" onsubmit="submitReschedule(event, '${appointmentId}')">
+      <label>New Date: <input type="date" name="date" required></label>
+      <label>New Time: <input type="time" name="time" required></label>
+      <button type="submit">Submit</button>
+    </form>
+  `;
+}
+
+function submitReschedule(event, appointmentId) {
+  event.preventDefault();
+  const form = event.target;
+  const formData = new FormData(form);
+
+  fetch(/patient/reschedule/${appointmentId}, {
+    method: 'POST',
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert(data.success || data.error);
+    showAppointments(); // Refresh list after reschedule
+  })
+  .catch(err => {
+    alert('Error submitting reschedule request.');
+    console.error(err);
+  });
+}
+
+function cancelAppointment(appointmentId) {
+  if (!confirm(Are you sure you want to cancel appointment #${appointmentId}?)) return;
+
+  fetch(/patient/cancel/${appointmentId}, {
+    method: 'POST'
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert(data.success || data.error);
+    showAppointments(); // Refresh list after cancel
+  })
+  .catch(err => {
+    alert('Error cancelling appointment.');
+    console.error(err);
+  });
+}
+
+
+function showLabReports() {
+  const contentDiv = document.getElementById('content');
+  const sidebarItems = document.querySelectorAll('.sidebar ul li');
+  sidebarItems.forEach(item => item.classList.remove('active'));
+  document.getElementById('lab-reports').classList.add('active');
+
+  fetch('/patient/labreports')
+    .then(response => response.json())
+    .then(data => {
+      if (data.length === 0) {
+        contentDiv.innerHTML = `
+          <div class="section">
+            <h2>Lab Reports</h2>
+            <p>No lab reports available yet.</p>
+          </div>
+        `;
+      } else {
+        let rows = data.map(report => `
+          <tr>
+            <td>${report.report_number}</td>
+            <td>${report.filename}</td>
+            <td>${report.file_type}</td>
+            <td>${report.uploaded_at}</td>
+            <td>
+              <a href="/download_report/${report.report_number}" target="_blank">Download</a>
+            </td>
+          </tr>
+        `).join("");
+
+        contentDiv.innerHTML = `
+          <div class="section">
+            <h2>Your Lab Reports</h2>
+            <table>
+              <tr>
+                <th>Report ID</th>
+                <th>Filename</th>
+                <th>Type</th>
+                <th>Uploaded At</th>
+                <th>Download</th>
+              </tr>
+              ${rows}
+            </table>
+          </div>
+        `;
+      }
+    })
+    .catch(error => {
+      contentDiv.innerHTML = <div class="section"><h2>Lab Reports</h2><p>Error fetching reports.</p></div>;
+      console.error('Error fetching lab reports:', error);
+    });
+}
+  </script>
+
+</body>
+</html>

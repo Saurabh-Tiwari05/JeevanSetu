@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JEEVAN SETU Chatbot</title>
+    <style>
+        body {
+           font-family: Arial, sans-serif;
+        text-align: center;
+        background-color: #007acc; /* blue background */
+        color: white;
+        margin: 0;
+        padding: 0;
+
+        }
+        .chat-container {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        #chatbox {
+            width: 100%;
+            height: 300px;
+            overflow-y: auto;
+            background-color: #f7fbff;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: left;
+            color: #003366;
+            font-size: 14px;
+            border: 1px solid #d1e8ff;
+        }
+        input {
+            width: 68%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: 1px solid #a3c9f5;
+            background-color: #f7fbff;
+            color: #003366;
+            font-size: 14px;
+        }
+        button {
+            padding: 10px;
+            margin: 5px;
+            background-color: #007acc;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background-color: #005fa3;
+        }
+        .button-clear {
+            background-color: #ff4d4d;
+        }
+        .button-clear:hover {
+            background-color: #cc0000;
+        }
+        #suggestions {
+            background-color: #ffffff;
+            color: #003366;
+            border: 1px solid #d1e8ff;
+            border-radius: 5px;
+            text-align: left;
+            width: 68%;
+            margin: 0 auto;
+            padding: 5px;
+            max-height: 100px;
+            overflow-y: auto;
+            position: absolute;
+        }
+        h2 {
+            color: #005fa3;
+        }
+
+        /* Style for the option buttons */
+        .option-container {
+            display: flex; /* Use flexbox for horizontal layout */
+            flex-wrap: wrap; /* Allow buttons to wrap to the next line */
+            justify-content: center; /* Center the buttons horizontally */
+        }
+
+        .option-button {
+            padding: 8px 12px;
+            margin: 5px;
+            background-color: #007acc;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            display: inline-block;
+            opacity: 0; /* Initially hidden */
+            transform: translateY(20px); /* Start below their final position */
+            animation: popup 0.3s ease-out forwards; /* Apply animation */
+        }
+
+        .option-button:hover {
+            background-color: #005fa3;
+        }
+
+        /* Popup animation */
+        @keyframes popup {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <h2>JEEVAN SETU Chatbot</h2>
+        <div id="chatbox"></div>
+        <input type="text" id="userInput" onkeyup="handleEnter(event)" placeholder="Ask Anything Regarding Help !!" />
+        <button onclick="checkSymptoms()">Check</button>
+        <button class="button-clear" onclick="clearChat()">Clear Chat</button>
+        <div id="suggestions"></div>
+    </div>
+
+    <script>
+        const healthDatabase = {
+            "physical": [
+                "fever", "cough", "sore throat", "shortness of breath",
+                "headache", "dizziness", "blurred vision", "seizures",
+                "stomach pain", "vomiting", "diarrhea", "loss of appetite",
+                "chest pain", "rash", "itching", "swelling"
+            ],
+            "mental": [
+                "anxiety", "stress", "depression", "insomnia",
+                "feeling overwhelmed", "lack of motivation", "panic attacks",
+                "mood swings", "loneliness", "feeling tired all the time"
+            ]
+        };
+
+        const mentalHealthResponses = {
+            "anxiety": "Hey, it’s okay to feel anxious sometimes. Take deep breaths and try focusing on what you can control right now. Speaking to a therapist might help too.",
+            "stress": "Feeling stressed? You're doing better than you think. Try taking short breaks, talking to a loved one, or practicing mindfulness.",
+            "depression": "If you're feeling low, remember you don't have to go through it alone. Reaching out to someone you trust or a therapist can really help.",
+            "insomnia": "Trouble sleeping? Try calming activities before bed, like reading, or listening to soft music. If it persists, consulting a doctor may be best."
+        };
+
+        function showSuggestions() {
+            const userInput = document.getElementById("userInput").value.toLowerCase().trim();
+            const suggestionsBox = document.getElementById("suggestions");
+
+            if (userInput === "") {
+                suggestionsBox.innerHTML = "";
+                return;
+            }
+
+            const matches = [
+                ...healthDatabase.physical.filter(symptom => symptom.startsWith(userInput)),
+                ...healthDatabase.mental.filter(symptom => symptom.startsWith(userInput))
+            ];
+
+            suggestionsBox.innerHTML = matches.length > 0 
+                ? matches.map(match => `<p onclick="selectSuggestion('${match}')">${match}</p>`).join("")
+                : "<p>No suggestions found</p>";
+        }
+
+        function selectSuggestion(suggestion) {
+            document.getElementById("userInput").value = suggestion;
+            document.getElementById("suggestions").innerHTML = "";
+        }
+
+        function checkSymptoms() {
+            const userMessage = document.getElementById("userInput").value.toLowerCase().trim();
+            const chatbox = document.getElementById("chatbox");
+
+            if (userMessage === "") {
+                addMessageToChatbox("JEEVAN SETU", "Please ask your question.");
+                return;
+            }
+
+            addMessageToChatbox("You", userMessage);
+
+            let response = "I'm here for you. Can you share a bit more about how you're feeling? Consulting a professional might also help.";
+
+            // Check for greetings
+            if (["hi", "hello", "hey", "good morning", "good afternoon", "good evening"].includes(userMessage)) {
+                response = "Hello! I'm your health assistant from Jeevan Setu. How can I help you today? (Please choose from the options below or type your question)";
+
+                // Create option buttons
+                const options = [
+                    "Book Appointment",
+                    "Pharmacy & Prescription",
+                    "Lab Tests & Reports",
+                    "Emergency Help",
+                    "Billing & Insurance",
+                    "Hospital Info",
+                    "Speak to Support (Human)"
+                ];
+
+                let optionButtons = "<div class='option-container'>"; // Wrap buttons in a container
+                for (let i = 0; i < options.length; i++) {
+                    optionButtons += `<button class="option-button" style="animation-delay: ${i * 0.1}s" onclick="handleOptionClick(${i + 1})">${i + 1}. ${options[i]}</button>`;
+                }
+                optionButtons += "</div>";
+
+                response += "<br>" + optionButtons; // Add buttons to the response
+            } else if (userMessage === "1") {
+                response = handleBookAppointment();
+            } else if (userMessage === "2") {
+                response = handlePharmacyPrescription();
+            } else if (userMessage === "3") {
+                response = handleLabTestsReports();
+            } else if (userMessage === "4") {
+                response = handleEmergencyHelp();
+            } else if (userMessage === "5") {
+                response = handleBillingInsurance();
+            } else if (userMessage === "6") {
+                response = handleHospitalInfo();
+            } else if (userMessage === "7") {
+                response = handleSpeakToSupport();
+            }
+            else if (healthDatabase.physical.includes(userMessage)) {
+                response = `You mentioned "${userMessage}". This might be a physical issue, and consulting a doctor could help.`;
+            } else if (healthDatabase.mental.includes(userMessage)) {
+                response = mentalHealthResponses[userMessage] || response;
+            }
+
+            addMessageToChatbox("JEEVAN SETU", response);
+
+            document.getElementById("userInput").value = "";
+            document.getElementById("suggestions").innerHTML = "";
+        }
+
+        function clearChat() {
+            document.getElementById("chatbox").innerHTML = "";
+            document.getElementById("suggestions").innerHTML = "";
+        }
+
+        function handleEnter(event) {
+            if (event.key === "Enter") {
+                checkSymptoms();
+            } else {
+                showSuggestions();
+            }
+        }
+
+        function addMessageToChatbox(sender, message) {
+            const chatbox = document.getElementById("chatbox");
+            let messageClass = (sender === "You") ? "user-message" : "bot-message";
+            chatbox.innerHTML += `<div class="${messageClass}"><strong>${sender}:</strong> ${message}</div>`;
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
+
+        // Function to handle option button clicks
+        function handleOptionClick(optionNumber) {
+            document.getElementById("userInput").value = optionNumber;
+            checkSymptoms();
+        }
+
+        // --------------------------------------------------------------------
+        // Option Handling Functions
+        // --------------------------------------------------------------------
+
+        function handleBookAppointment() {
+            let department = prompt("What type of doctor or department would you like to consult? (e.g., Dermatologist, Cardiologist, General Physician)");
+            if (department) {
+                // In a real application, you would fetch doctors from a database
+                let doctors = ["Dr. Smith", "Dr. Jones", "Dr. Brown"]; // Example
+                let doctorList = doctors.join(", ");
+                let preferredDate = prompt(`Available doctors in ${department}: ${doctorList}. Please enter your preferred date and time.`);
+                if (preferredDate) {
+                    let name = prompt("Please enter your name:");
+                    let age = prompt("Please enter your age:");
+                    let contact = prompt("Please enter your contact number:");
+                    return `Your appointment with Dr. [Name] is booked for [Date & Time]. You'll receive a confirmation SMS and WhatsApp shortly.`;
+                } else {
+                    return "Okay, please let us know when you're ready to book.";
+                }
+            } else {
+                return "Please specify the department you'd like to consult.";
+            }
+        }
+
+        function handlePharmacyPrescription() {
+            return "Please choose an option:\n1. Upload Prescription\n2. Order OTC Medicines\n3. Track My Pharmacy Order\n4. Talk to Pharmacist";
+        }
+
+        function handleLabTestsReports() {
+            return "Please choose an option:\n1. Book Lab Test\n2. Home Sample Collection\n3. View My Reports\n4. Report Delay or Issue";
+        }
+
+        function handleEmergencyHelp() {
+            return "If this is a medical emergency, please call 108 immediately.\nOr choose from below:\n1. Call Ambulance\n2. Nearest Emergency Room\n3. First Aid Tips\n4. Panic Alert (Triggers internal alert system)";
+        }
+
+        function handleBillingInsurance() {
+            return "Please select what you'd like to know:\n1. View My Bill\n2. Pay My Bill\n3. Insurance Coverage\n4. Reimbursement Queries";
+        }
+
+        function handleHospitalInfo() {
+            return "What do you need help with?\n1. Visiting Hours\n2. OPD Timing\n3. Parking & Location\n4. Cafeteria / Facilities\n5. Doctor Availability";
+        }
+
+        function handleSpeakToSupport() {
+            return "Transferring you to a live support executive. Please wait… (If no one available: offer to schedule a callback or send message.)";
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tariff</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #e6f0ff;
+    }
+
+    .header {
+      background-color: #283593;
+      color: white;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+    }
+
+    .back-button {
+      color: white;
+      font-size: 20px;
+      margin-right: 10px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .header-title {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .search-container {
+      display: flex;
+      align-items: center;
+      padding: 10px 15px;
+      background-color: #ffffff;
+      margin: 10px;
+      border-radius: 10px;
+    }
+
+    .search-container input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      outline: none;
+      font-size: 16px;
+      border-radius: 10px;
+    }
+
+    .section-title {
+      margin: 15px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .card {
+      background-color: white;
+      margin: 10px 15px;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card h3 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: normal;
+      color: #333;
+    }
+
+    .card span {
+      color: #283593;
+      font-weight: bold;
+    }
+
+    .card .price {
+      color: #0288d1;
+      font-weight: bold;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <a href="#" class="back-button" onclick="window.history.back();">&#8592;</a>
+    <div class="header-title">Tariff</div>
+  </div>
+
+  <div class="search-container">
+    <input type="text" id="searchInput" placeholder="Enter tariff to search">
+  </div>
+
+  <div class="section-title">Hospital Charges:</div>
+
+  <div id="cardContainer"></div>
+
+  <script>
+    const charges = [
+      "OPD Consultation", "General Ward Bed Charge", "Semi-Private Room Rent", "Private Room Rent",
+      "ICU Charges", "Deluxe Suite Room", "Nursing Charges", "Operation Theatre Charges", "Oxygen Charges",
+      "Ventilator Charges", "Physiotherapy Session", "Ambulance Charges", "Injection Charges", "Dressing Charges",
+      "Surgical Package", "Minor Procedure Charges", "Major Surgery Charges", "Blood Transfusion Charges",
+      "Nebulization Charges", "Dialysis Session", "MRI Scan", "CT Scan", "X-Ray Chest", "Ultrasound Abdomen",
+      "ECG", "Echo Cardiography", "Endoscopy", "Colonoscopy", "Bronchoscopy", "Lab Test - CBC", "Lab Test - LFT",
+      "Lab Test - KFT", "Lab Test - Lipid Profile", "Lab Test - Thyroid Profile", "Lab Test - CRP", "Lab Test - D Dimer",
+      "Lab Test - HBA1C", "Lab Test - Urine Routine", "Lab Test - Urine Culture", "Lab Test - Blood Grouping",
+      "Lab Test - HIV", "Lab Test - Hepatitis B", "Lab Test - Hepatitis C", "Lab Test - Dengue NS1", "Lab Test - Malaria",
+      "Vaccination Charges", "Covid-19 RT-PCR", "Covid-19 Antigen Test", "Covid-19 Antibody Test",
+      "Post-Operative Care Charges", "Anesthesia Charges", "Doctor Visit Charges", "Surgeon Visit Charges",
+      "Dietician Visit Charges", "Counseling Charges", "Palliative Care Charges", "Home Care Visit Charges",
+      "Emergency Room Charges", "Admission Charges", "Discharge Summary Charges", "IV Fluid Charges",
+      "Monitoring Charges", "HDU Bed Charges", "Ventilator Bed Charges", "ICU Monitoring Charges",
+      "Blood Sample Collection Charges", "Pathology Charges", "Cardiology Consultation", "Neurology Consultation",
+      "Oncology Consultation", "Gastroenterology Consultation", "Pulmonology Consultation", "Dermatology Consultation",
+      "ENT Consultation", "Orthopedic Consultation", "Pediatric Consultation", "Psychiatry Consultation",
+      "Nephrology Consultation", "Endocrinology Consultation", "Urology Consultation", "Ophthalmology Consultation",
+      "Gynecology Consultation", "Maternity Package", "Cesarean Delivery Charges", "Normal Delivery Charges",
+      "Newborn Screening", "Neonatal ICU Charges", "Phototherapy Charges", "Hearing Test for Newborn", 
+      "Bedside ECG", "Bedside X-Ray", "Bedside Ultrasound", "Plaster Application Charges", "Suture Removal Charges",
+      "Blood Pressure Monitoring", "Blood Sugar Monitoring", "Pulse Oximetry Monitoring", "Intra-Venous Cannulation",
+      "Catheterization Charges", "Urine Bag Charges", "Ryle's Tube Insertion", "Central Line Insertion",
+      "Arterial Line Insertion", "Wound Dressing Charges", "Syringe Pump Charges", "Infusion Pump Charges",
+      "Oxygen Cylinder Charges", "Nebulizer Machine Charges", "Defibrillator Charges", "CPR Charges",
+      "Pacemaker Insertion", "ICD Insertion", "Stent Charges", "Bypass Surgery Package", "Angioplasty Package",
+      "Heart Valve Surgery Package", "Liver Transplant Package", "Kidney Transplant Package", "Bone Marrow Transplant",
+      "Chemotherapy Session", "Radiotherapy Session", "PET-CT Scan", "MRI Angiography", "CT Angiography",
+      "Cardiac MRI", "Echocardiography Stress Test", "Stress Test (TMT)", "Pulmonary Function Test",
+      "Allergy Test", "Skin Prick Test", "Food Allergy Panel", "Immunoglobulin Test", "Thalassemia Screening",
+      "Genetic Testing", "Bone Density Test", "Vitamin D Test", "Vitamin B12 Test", "Iron Studies",
+      "Calcium Test", "Phosphorus Test", "Magnesium Test", "Zinc Test", "Copper Test", "Selenium Test",
+      "Lead Level Test", "Mercury Level Test", "Arsenic Level Test", "Heavy Metal Panel", "Toxicology Panel",
+      "Drug Level Monitoring", "Therapeutic Drug Monitoring", "Hepatic Panel", "Renal Panel", "Cardiac Enzymes Panel"
+    ];
+
+    const prices = [50, 100, 150, 200, 300, 400, 500, 700, 1000, 1500, 2000, 2500, 3000, 5000, 8000, 10000, 15000, 20000];
+    const data = [];
+
+    for (let i = 0; i < 300; i++) {
+      let name = charges[i % charges.length] + ` #${i + 1}`;
+      let price = `₹ ${(prices[i % prices.length]).toFixed(2)}`;
+      let category = "General";
+      data.push({ name, category, price });
+    }
+
+    const cardContainer = document.getElementById('cardContainer');
+
+    function renderCards(filteredData) {
+      cardContainer.innerHTML = "";
+      filteredData.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div>
+            <h3>${item.name}</h3>
+            <span>${item.category}</span>
+          </div>
+          <div class="price">${item.price}</div>
+        `;
+        cardContainer.appendChild(card);
+      });
+    }
+
+    renderCards(data);
+
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', function() {
+      const query = this.value.toLowerCase();
+      const filtered = data.filter(item => item.name.toLowerCase().includes(query) || item.category.toLowerCase().includes(query));
+      renderCards(filtered);
+    });
+  </script>
+</body>
+</html>

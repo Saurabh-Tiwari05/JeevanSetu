@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Billing</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #e9eefc;
+      margin: 0;
+      padding: 0;
+    }
+
+    .header {
+      background-color: #3f51b5;
+      color: white;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+    }
+
+    .header h1 {
+      flex: 1;
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .tabs {
+      display: flex;
+      background-color: #e0e0e0;
+    }
+
+    .tabs div {
+      flex: 1;
+      text-align: center;
+      padding: 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .tabs .active {
+      background-color: #3f51b5;
+      color: white;
+    }
+
+    .card {
+      background-color: white;
+      margin: 15px;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: bold;
+      font-size: 18px;
+      color: #3f51b5;
+    }
+
+    .price {
+      color: green;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .details {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    .details div {
+      margin: 5px 0;
+    }
+
+    .details i {
+      margin-right: 8px;
+      color: #3f51b5;
+    }
+
+    .arrow {
+      text-align: right;
+      font-size: 20px;
+      color: #0d47a1;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>&larr; Billing</h1>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="showBills('opd')">OPD Bills</div>
+    <div class="tab" onclick="showBills('ipd')">IPD Bills</div>
+  </div>
+
+  <div id="billing-container">
+    <!-- Billing entries will go here -->
+  </div>
+
+  <script>
+    const opdEntries = [
+      { department: "General Medicine", date: "12-Feb-2025", unit: "General", type: "OPD", price: "Rs 250.00" },
+      { department: "Cardiology", date: "14-Feb-2025", unit: "Heart Care", type: "OPD", price: "Rs 500.00" },
+      { department: "Pediatrics", date: "16-Feb-2025", unit: "Child Care", type: "OPD", price: "Rs 300.00" },
+      { department: "Orthopedics", date: "18-Feb-2025", unit: "Bone Care", type: "OPD", price: "Rs 450.00" },
+      { department: "Dermatology", date: "20-Feb-2025", unit: "Skin Clinic", type: "OPD", price: "Rs 350.00" },
+      { department: "Neurology", date: "22-Feb-2025", unit: "Brain Center", type: "OPD", price: "Rs 600.00" },
+      { department: "ENT", date: "24-Feb-2025", unit: "Ear Care", type: "OPD", price: "Rs 400.00" },
+      { department: "Ophthalmology", date: "26-Feb-2025", unit: "Eye Care", type: "OPD", price: "Rs 300.00" },
+      { department: "Oncology", date: "28-Feb-2025", unit: "Cancer Care", type: "OPD", price: "Rs 700.00" },
+      { department: "Gastroenterology", date: "01-Mar-2025", unit: "Digestive Care", type: "OPD", price: "Rs 550.00" }
+    ];
+
+    const ipdEntries = [
+      { department: "General Surgery", date: "10-Feb-2025", unit: "Surgical Ward", type: "IPD", price: "Rs 2500.00" },
+      { department: "Orthopedics", date: "12-Feb-2025", unit: "Bone Unit", type: "IPD", price: "Rs 3500.00" },
+      { department: "Cardiology", date: "14-Feb-2025", unit: "Heart ICU", type: "IPD", price: "Rs 5000.00" },
+      { department: "Neurology", date: "16-Feb-2025", unit: "Neuro Ward", type: "IPD", price: "Rs 4200.00" },
+      { department: "Oncology", date: "18-Feb-2025", unit: "Cancer Ward", type: "IPD", price: "Rs 6000.00" },
+      { department: "Gynecology", date: "20-Feb-2025", unit: "Maternity Ward", type: "IPD", price: "Rs 3000.00" },
+      { department: "Pediatrics", date: "22-Feb-2025", unit: "Children's Ward", type: "IPD", price: "Rs 2800.00" },
+      { department: "ENT", date: "24-Feb-2025", unit: "ENT Ward", type: "IPD", price: "Rs 2700.00" },
+      { department: "Ophthalmology", date: "26-Feb-2025", unit: "Eye Ward", type: "IPD", price: "Rs 2400.00" },
+      { department: "Dermatology", date: "28-Feb-2025", unit: "Skin Ward", type: "IPD", price: "Rs 2200.00" }
+    ];
+
+    function showBills(type) {
+      const tabs = document.querySelectorAll(".tab");
+      tabs.forEach(tab => tab.classList.remove("active"));
+      if (type === "opd") tabs[0].classList.add("active");
+      else tabs[1].classList.add("active");
+
+      const container = document.getElementById("billing-container");
+      container.innerHTML = "";
+
+      const entries = type === "opd" ? opdEntries : ipdEntries;
+
+      entries.forEach(entry => {
+        container.innerHTML += `
+          <div class="card">
+            <div class="card-header">
+              ${entry.department}
+              <span class="price">${entry.price}</span>
+            </div>
+            <div class="details">
+              <div><i>&#128197;</i>${entry.date}</div>
+              <div><i>&#128203;</i>${entry.unit}</div>
+              <div><i>&#128205;</i>${entry.type}</div>
+            </div>
+            <div class="arrow">&rarr;</div>
+          </div>
+        `;
+      });
+    }
+
+    // Load OPD bills by default
+    showBills("opd");
+  </script>
+
+</body>
+</html>

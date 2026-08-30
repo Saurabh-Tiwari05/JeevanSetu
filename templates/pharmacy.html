@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharmacy - Upload Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fa;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .upload-container {
+            width: 80%;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .input-field {
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"], select, input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            font-size: 1em;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .alert {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        .success-message {
+            color: green;
+            font-size: 1.2em;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="upload-container">
+        <h1>Pharmacy</h1>
+        
+        <!-- Display Flash Messages -->
+        <div class="alert">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul>
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <form id="upload-form" method="POST" action="/upload_pharmacy" enctype="multipart/form-data">
+            <!-- Patient ID -->
+            <div class="input-field">
+                <h2>Enter Patient ID</h2>
+                <input type="text" name="patient_id" placeholder="e.g., PATA1ABCD1" maxlength="10" required>
+            </div>
+
+            <!-- Patient Name -->
+            <div class="input-field">
+                <h2>Enter Patient Name</h2>
+                <input type="text" name="patient_name" placeholder="Patient's Full Name" required>
+            </div>
+
+            <!-- Hospital Name Dropdown -->
+            <div class="input-field">
+                <h2>Hospital Name</h2>
+                <select name="hospital_name" required>
+                    <option value="" disabled selected>Select Hospital</option>
+                    {% for hospital in hospitals %}
+                        <option value="{{ hospital.name }}">{{ hospital.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- File Upload -->
+            <div class="input-field">
+                <h2>Upload Report (PDF/Image)</h2>
+                <input type="file" name="report_file" accept=".png,.jpg,.jpeg,.pdf" required>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit">Upload Report</button>
+        </form>
+
+        {% if order_number %}
+<div class="success-message">
+    <p>Report uploaded successfully!</p>
+    <p>Your Order Number: <strong>{{ order_number }}</strong></p>
+</div>
+{% endif %}
+
+</body>
+</html>

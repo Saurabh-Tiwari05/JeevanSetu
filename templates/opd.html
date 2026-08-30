@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OPD Enquiry</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f0f4f7;
+    }
+    .header {
+      background-color: #3f51b5;
+      color: white;
+      text-align: center;
+      padding: 16px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .tabs {
+      display: flex;
+      justify-content: space-around;
+      background: #e0e0e0;
+      padding: 8px 0;
+    }
+    .tabs input {
+      margin-right: 8px;
+    }
+    .search-container {
+      display: flex;
+      padding: 8px;
+      background: white;
+      align-items: center;
+    }
+    .search-container input {
+      width: 100%;
+      padding: 8px;
+      font-size: 16px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    .doctor-card {
+      background: white;
+      margin: 12px;
+      padding: 12px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .doctor-card h3 {
+      margin: 0;
+      color: #007bff;
+    }
+    .doctor-card p {
+      margin: 4px 0;
+    }
+    .unit-days {
+      background: #dce7f7;
+      padding: 8px;
+      border-radius: 4px;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">OPD Enquiry</div>
+
+  <div class="tabs">
+    <label><input type="radio" name="tab" value="General" checked> GENERAL</label>
+    <label><input type="radio" name="tab" value="Special"> SPECIAL</label>
+    <label><input type="radio" name="tab" value="All"> ALL</label>
+  </div>
+
+  <div class="search-container">
+    <input type="text" id="search" placeholder="Search by unit name...">
+  </div>
+
+  <div id="doctorList"></div>
+
+  <script>
+    const names = ['Dr. Anjali Mehta', 'Dr. Rajesh Kumar', 'Dr. Priya Sharma', 'Dr. Vikram Singh', 'Dr. Neha Verma', 'Dr. Arjun Desai', 'Dr. Kavita Rao', 'Dr. Sandeep Malhotra', 'Dr. Meera Joshi', 'Dr. Rohan Kapoor'];
+    const departments = ['General Medicine', 'Pediatrics', 'Dermatology', 'Orthopedics', 'Ophthalmology', 'Cardiology', 'Neurology', 'Oncology', 'Gastroenterology', 'Endocrinology'];
+    const units = ['Internal Medicine Unit', 'Child Health Unit', 'Skin Care Unit', 'Bone Health Unit', 'Vision Care Unit', 'Heart Care Unit', 'Brain Health Unit', 'Cancer Treatment Unit', 'Digestive Health Unit', 'Hormone Care Unit'];
+    const buildings = ['Block A/201', 'Block B/302', 'Block C/101', 'Block D/202', 'Block E/303'];
+    const shifts = ['MON(08:00 AM - 02:00 PM)', 'TUE(10:00 AM - 04:00 PM)', 'WED(12:00 PM - 06:00 PM)', 'THU(02:00 PM - 08:00 PM)', 'FRI(04:00 PM - 10:00 PM)'];
+
+    const doctors = [];
+
+    for (let i = 1; i <= 100; i++) {
+      doctors.push({
+        name: names[Math.floor(Math.random() * names.length)],
+        department: departments[Math.floor(Math.random() * departments.length)],
+        unit: units[Math.floor(Math.random() * units.length)],
+        building: buildings[Math.floor(Math.random() * buildings.length)],
+        days: shifts[Math.floor(Math.random() * shifts.length)],
+        category: 'General'
+      });
+    }
+
+    for (let i = 1; i <= 50; i++) {
+      doctors.push({
+        name: names[Math.floor(Math.random() * names.length)],
+        department: departments[Math.floor(Math.random() * departments.length)],
+        unit: units[Math.floor(Math.random() * units.length)],
+        building: buildings[Math.floor(Math.random() * buildings.length)],
+        days: shifts[Math.floor(Math.random() * shifts.length)],
+        category: 'Special'
+      });
+    }
+
+    for (let i = 1; i <= 200; i++) {
+      doctors.push({
+        name: names[Math.floor(Math.random() * names.length)],
+        department: departments[Math.floor(Math.random() * departments.length)],
+        unit: units[Math.floor(Math.random() * units.length)],
+        building: buildings[Math.floor(Math.random() * buildings.length)],
+        days: shifts[Math.floor(Math.random() * shifts.length)],
+        category: 'All'
+      });
+    }
+
+    const doctorList = document.getElementById('doctorList');
+    const searchInput = document.getElementById('search');
+    const tabs = document.querySelectorAll('input[name="tab"]');
+
+    function renderDoctors() {
+      const selectedTab = document.querySelector('input[name="tab"]:checked').value;
+      const searchTerm = searchInput.value.trim().toLowerCase();
+      doctorList.innerHTML = '';
+
+      const filtered = doctors.filter(doc =>
+        (selectedTab === 'All' || doc.category === selectedTab) &&
+        (searchTerm === '' || doc.unit.toLowerCase().includes(searchTerm))
+      );
+
+      if (filtered.length === 0) {
+        doctorList.innerHTML = '<p style="text-align:center;margin:20px;">No doctors found.</p>';
+        return;
+      }
+
+      filtered.forEach(doc => {
+        const card = document.createElement('div');
+        card.className = 'doctor-card';
+        card.innerHTML = `
+          <h3>OPD Name: ${doc.name} <span style="float:right;color:#00a">${doc.category}</span></h3>
+          <p><strong>Department:</strong> ${doc.department}</p>
+          <p><strong>Unit:</strong> ${doc.unit}</p>
+          <p><strong>Building/Block:</strong> ${doc.building}</p>
+          <p><strong>Shift Time:</strong></p>
+          <div class="unit-days"><strong>UNIT DAY(S):</strong> ${doc.days}</div>
+        `;
+        doctorList.appendChild(card);
+      });
+    }
+
+    // Event listeners
+    tabs.forEach(tab => tab.addEventListener('change', renderDoctors));
+    searchInput.addEventListener('input', renderDoctors);
+
+    // Initial render
+    renderDoctors();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback & Complaint - Jeevan Setu</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #e0f2f7, #b3d9e8);
+            color: #000;
+            font-weight: bold;
+            overflow-x: hidden;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px;
+            background-color: rgba(102, 178, 255, 0.7);
+            color: #000;
+            font-weight: bold;
+            font-size: 2em;
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: popupHeader 0.5s ease-out forwards 0.2s;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes popupHeader {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.4);
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: popupContainer 0.5s ease-out forwards 0.4s;
+        }
+
+        @keyframes popupContainer {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1, h2 {
+            color: #000;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: popupFormGroup 0.5s ease-out forwards 0.6s;
+        }
+
+        @keyframes popupFormGroup {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #000;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #a3c9f5;
+            border-radius: 4px;
+            box-sizing: border-box;
+            background-color: rgba(255, 255, 255, 0.7);
+            color: #000;
+            font-weight: normal;
+        }
+
+        textarea {
+            height: 100px;
+        }
+
+        button, .option-button {
+            background-color: #007acc;
+            color: #000;
+            font-weight: bold;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: popupButton 0.5s ease-out forwards;
+            display: inline-block;
+            margin: 5px;
+        }
+
+        button:hover, .option-button:hover {
+            background-color: #005fa3;
+        }
+
+        @keyframes popupButton {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #complaintStatus {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #a3c9f5;
+            border-radius: 4px;
+            background-color: rgba(255, 255, 255, 0.3);
+            color: #000;
+            font-weight: bold;
+        }
+
+        .survey-question {
+            margin-bottom: 15px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: popupSurveyQuestion 0.5s ease-out forwards 1.0s;
+        }
+
+        @keyframes popupSurveyQuestion {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .survey-options label {
+            display: inline-block;
+            margin-right: 10px;
+            color: #000;
+            font-weight: bold;
+        }
+
+        #complaintIdDisplay {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #000;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: popupComplaintId 0.5s ease-out forwards 1.2s;
+        }
+
+        @keyframes popupComplaintId {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .initial-options {
+            text-align: center;
+            margin-top: 50px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: popupInitialOptions 0.5s ease-out forwards 0.6s;
+        }
+
+        @keyframes popupInitialOptions {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .initial-options .option-button {
+            animation: popupButton 0.5s ease-out forwards;
+        }
+
+        #feedbackFormSection, #complaintFormSection, #trackingSection {
+            display: none;
+            position: relative; /* Needed for absolute positioning */
+        }
+
+        #optionalComment {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #a3c9f5;
+            border-radius: 4px;
+            box-sizing: border-box;
+            background-color: rgba(255, 255, 255, 0.8);
+            color: #000;
+            font-weight: normal;
+            height: 100px;
+        }
+
+        .back-button {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+        }
+
+        /* Star Rating Styles */
+        .rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .rating input {
+            display: none;
+        }
+
+        .rating label {
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            background-color: transparent;
+            transition: color 0.2s ease;
+        }
+
+        .rating label:before {
+            content: "\f005"; /* FontAwesome star */
+            font-family: FontAwesome;
+            font-size: 30px;
+            display: block;
+        }
+
+        .rating input:checked ~ label:before {
+            color: gold;
+        }
+
+        .rating label:hover:before,
+        .rating label:hover ~ label:before {
+            color: gold;
+        }
+
+        /* Star Rating Descriptions */
+        .star-descriptions {
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        .star-descriptions span {
+            display: inline-block;
+            margin: 0 5px;
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">JEEVAN SETU</div>
+
+    <div class="container">
+        <h1>Feedback & Complaint Section</h1>
+
+        <div class="initial-options">
+            <button class="option-button" onclick="showFeedbackForm()">Share Feedback</button>
+            <button class="option-button" onclick="showComplaintForm()">Register Complaint</button>
+            <br>
+            <button class="option-button" onclick="showTrackingSection()">Track Complaint (If Complaint Registered)</button>
+        </div>
+
+        <div id="feedbackFormSection">
+            <h2>Patient Experience Survey</h2>
+            <form id="surveyForm">
+                <div class="survey-question">
+                    <label>1. How would you rate your overall experience with Jeevan Setu?</label>
+                    <div class="rating">
+                        <input type="radio" id="overallStar5" name="overall_satisfaction" value="5" /><label for="overallStar5"></label>
+                        <input type="radio" id="overallStar4" name="overall_satisfaction" value="4" /><label for="overallStar4"></label>
+                        <input type="radio" id="overallStar3" name="overall_satisfaction" value="3" /><label for="overallStar3"></label>
+                        <input type="radio" id="overallStar2" name="overall_satisfaction" value="2" /><label for="overallStar2"></label>
+                        <input type="radio" id="overallStar1" name="overall_satisfaction" value="1" /><label for="overallStar1"></label>
+                    </div>
+                    <div class="star-descriptions">
+                        <span>1 - Very Dissatisfied</span>
+                        <span>2 - Dissatisfied</span>
+                        <span>3 - Neutral</span>
+                        <span>4 - Satisfied</span>
+                        <span>5 - Very Satisfied</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>2. How satisfied were you with these services?</label>
+                    <div>
+                        <label>Appointment</label>
+                        <div class="rating">
+                            <input type="radio" id="apptStar5" name="appt_satisfaction" value="5" /><label for="apptStar5"></label>
+                            <input type="radio" id="apptStar4" name="appt_satisfaction" value="4" /><label for="apptStar4"></label>
+                            <input type="radio" id="apptStar3" name="appt_satisfaction" value="3" /><label for="apptStar3"></label>
+                            <input type="radio" id="apptStar2" name="appt_satisfaction" value="2" /><label for="apptStar2"></label>
+                            <input type="radio" id="apptStar1" name="appt_satisfaction" value="1" /><label for="apptStar1"></label>
+                        </div>
+                        <div class="star-descriptions">
+                            <span>1 - Very Dissatisfied</span>
+                            <span>2 - Dissatisfied</span>
+                            <span>3 - Neutral</span>
+                            <span>4 - Satisfied</span>
+                            <span>5 - Very Satisfied</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label>Pharmacy</label>
+                        <div class="rating">
+                            <input type="radio" id="pharmStar5" name="pharm_satisfaction" value="5" /><label for="pharmStar5"></label>
+                            <input type="radio" id="pharmStar4" name="pharm_satisfaction" value="4" /><label for="pharmStar4"></label>
+                            <input type="radio" id="pharmStar3" name="pharm_satisfaction" value="3" /><label for="pharmStar3"></label>
+                            <input type="radio" id="pharmStar2" name="pharm_satisfaction" value="2" /><label for="pharmStar2"></label>
+                            <input type="radio" id="pharmStar1" name="pharm_satisfaction" value="1" /><label for="pharmStar1"></label>
+                        </div>
+                         <div class="star-descriptions">
+                            <span>1 - Very Dissatisfied</span>
+                            <span>2 - Dissatisfied</span>
+                            <span>3 - Neutral</span>
+                            <span>4 - Satisfied</span>
+                            <span>5 - Very Satisfied</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label>Lab Test</label>
+                        <div class="rating">
+                            <input type="radio" id="labStar5" name="lab_satisfaction" value="5" /><label for="labStar5"></label>
+                            <input type="radio" id="labStar4" name="lab_satisfaction" value="4" /><label for="labStar4"></label>
+                            <input type="radio" id="labStar3" name="lab_satisfaction" value="3" /><label for="labStar3"></label>
+                            <input type="radio" id="labStar2" name="lab_satisfaction" value="2" /><label for="labStar2"></label>
+                            <input type="radio" id="labStar1" name="lab_satisfaction" value="1" /><label for="labStar1"></label>
+                        </div>
+                         <div class="star-descriptions">
+                            <span>1 - Very Dissatisfied</span>
+                            <span>2 - Dissatisfied</span>
+                            <span>3 - Neutral</span>
+                            <span>4 - Satisfied</span>
+                            <span>5 - Very Satisfied</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label>Emergency</label>
+                        <div class="rating">
+                            <input type="radio" id="emStar5" name="em_satisfaction" value="5" /><label for="emStar5"></label>
+                            <input type="radio" id="emStar4" name="em_satisfaction" value="4" /><label for="emStar4"></label>
+                            <input type="radio" id="emStar3" name="em_satisfaction" value="3" /><label for="emStar3"></label>
+                            <input type="radio" id="emStar2" name="em_satisfaction" value="2" /><label for="emStar2"></label>
+                            <input type="radio" id="emStar1" name="em_satisfaction" value="1" /><label for="emStar1"></label>
+                        </div>
+                         <div class="star-descriptions">
+                            <span>1 - Very Dissatisfied</span>
+                            <span>2 - Dissatisfied</span>
+                            <span>3 - Neutral</span>
+                            <span>4 - Satisfied</span>
+                            <span>5 - Very Satisfied</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label>Online Consultation</label>
+                        <div class="rating">
+                            <input type="radio" id="onlineStar5" name="online_satisfaction" value="5" /><label for="onlineStar5"></label>
+                            <input type="radio" id="onlineStar4" name="online_satisfaction" value="4" /><label for="onlineStar4"></label>
+                            <input type="radio" id="onlineStar3" name="online_satisfaction" value="3" /><label for="onlineStar3"></label>
+                            <input type="radio" id="onlineStar2" name="online_satisfaction" value="2" /><label for="onlineStar2"></label>
+                            <input type="radio" id="onlineStar1" name="online_satisfaction" value="1" /><label for="onlineStar1"></label>
+                        </div>
+                         <div class="star-descriptions">
+                            <span>1 - Very Dissatisfied</span>
+                            <span>2 - Dissatisfied</span>
+                            <span>3 - Neutral</span>
+                            <span>4 - Satisfied</span>
+                            <span>5 - Very Satisfied</span>
+                        </div>
+                    </div>
+                </div>
+
+                 <div class="form-group">
+                    <label>3. Was the staff behavior courteous and helpful?</label>
+                    <div class="rating">
+                        <input type="radio" id="staffStar5" name="staff_satisfaction" value="5" /><label for="staffStar5"></label>
+                        <input type="radio" id="staffStar4" name="staff_satisfaction" value="4" /><label for="staffStar4"></label>
+                        <input type="radio" id="staffStar3" name="staff_satisfaction" value="3" /><label for="staffStar3"></label>
+                        <input type="radio" id="staffStar2" name="staff_satisfaction" value="2" /><label for="staffStar2"></label>
+                        <input type="radio" id="staffStar1" name="staff_satisfaction" value="1" /><label for="staffStar1"></label>
+                    </div>
+                     <div class="star-descriptions">
+                            <span>1 - Very Dissatisfied</span>
+                            <span>2 - Dissatisfied</span>
+                            <span>3 - Neutral</span>
+                            <span>4 - Satisfied</span>
+                            <span>5 - Very Satisfied</span>
+                        </div>
+                </div>
+
+                 <div class="form-group">
+                    <label>4. Was your issue or requirement resolved properly?</label>
+                    <div class="rating">
+                        <input type="radio" id="resolvedStar5" name="resolved_satisfaction" value="5" /><label for="resolvedStar5"></label>
+                        <input type="radio" id="resolvedStar4" name="resolved_satisfaction" value="4" /><label for="resolvedStar4"></label>
+                        <input type="radio" id="resolvedStar3" name="resolved_satisfaction" value="3" /><label for="resolvedStar3"></label>
+                        <input type="radio" id="resolvedStar2" name="resolved_satisfaction" value="2" /><label for="resolvedStar2"></label>
+                        <input type="radio" id="resolvedStar1" name="resolved_satisfaction" value="1" /><label for="resolvedStar1"></label>
+                    </div>
+                     <div class="star-descriptions">
+                            <span>1 - Very Dissatisfied</span>
+                            <span>2 - Dissatisfied</span>
+                            <span>3 - Neutral</span>
+                            <span>4 - Satisfied</span>
+                            <span>5 - Very Satisfied</span>
+                        </div>
+                </div>
+
+                 <div class="form-group">
+                    <label>5. How was the wait time / delivery time for the service?</label>
+                    <div class="rating">
+                        <input type="radio" id="waitStar5" name="wait_satisfaction" value="5" /><label for="waitStar5"></label>
+                        <input type="radio" id="waitStar4" name="wait_satisfaction" value="4" /><label for="waitStar4"></label>
+                        <input type="radio" id="waitStar3" name="wait_satisfaction" value="3" /><label for="waitStar3"></label>
+                        <input type="radio" id="waitStar2" name="wait_satisfaction" value="2" /><label for="waitStar2"></label>
+                        <input type="radio" id="waitStar1" name="wait_satisfaction" value="1" /><label for="waitStar1"></label>
+                    </div>
+                     <div class="star-descriptions">
+                            <span>1 - Very Dissatisfied</span>
+                            <span>2 - Dissatisfied</span>
+                            <span>3 - Neutral</span>
+                            <span>4 - Satisfied</span>
+                            <span>5 - Very Satisfied</span>
+                        </div>
+                </div>
+
+                 <div class="form-group">
+                    <label>6. Was the communication (via app, SMS, or support) clear and timely?</label>
+                    <div class="rating">
+                        <input type="radio" id="communicationStar5" name="communication_satisfaction" value="5" /><label for="communicationStar5"></label>
+                        <input type="radio" id="communicationStar4" name="communication_satisfaction" value="4" /><label for="communicationStar4"></label>
+                        <input type="radio" id="communicationStar3" name="communication_satisfaction" value="3" /><label for="communicationStar3"></label>
+                        <input type="radio" id="communicationStar2" name="communication_satisfaction" value="2" /><label for="communicationStar2"></label>
+                        <input type="radio" id="communicationStar1" name="communication_satisfaction" value="1" /><label for="communicationStar1"></label>
+                    </div>
+                     <div class="star-descriptions">
+                            <span>1 - Very Dissatisfied</span>
+                            <span>2 - Dissatisfied</span>
+                            <span>3 - Neutral</span>
+                            <span>4 - Satisfied</span>
+                            <span>5 - Very Satisfied</span>
+                        </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="likedMost">7. What did you like the most about our service?</label>
+                    <textarea id="likedMost" name="likedMost"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="improvements">8. What can we improve?</label>
+                    <textarea id="improvements" name="improvements"></textarea>
+                </div>
+
+                <button type="submit">Submit Survey</button>
+            </form>
+             <button class="option-button back-button" onclick="showInitialOptions()">Back to Options</button>
+        </div>
+
+        <div id="complaintFormSection">
+            <h2>Submit a Complaint</h2>
+            <form id="complaintForm">
+                <div class="form-group">
+                    <label for="name">Your Name:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Your Email:</label>
+                    <input type="text" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="complaintDetails">Complaint Details:</label>
+                    <textarea id="complaintDetails" name="complaintDetails" required></textarea>
+                </div>
+                <button type="submit">Submit Complaint</button>
+            </form>
+             <button class="option-button back-button" onclick="showInitialOptions()">Back to Options</button>
+            <div id="complaintIdDisplay">
+                <!-- Complaint ID will be displayed here -->
+            </div>
+        </div>
+
+        <div id="trackingSection">
+            <h2>Track Complaint Status</h2>
+            <div class="form-group">
+                <label for="complaintId">Complaint ID:</label>
+                <input type="text" id="complaintId" name="complaintId">
+                <button onclick="trackComplaint()">Track</button>
+            </div>
+            <div id="complaintStatus">
+                <!-- Complaint status will be displayed here -->
+            </div>
+             <button class="option-button back-button" onclick="showInitialOptions()">Back to Options</button>
+        </div>
+    </div>
+
+    <script>
+        function showInitialOptions() {
+            document.querySelector(".initial-options").style.display = "block";
+            document.getElementById("feedbackFormSection").style.display = "none";
+            document.getElementById("complaintFormSection").style.display = "none";
+            document.getElementById("trackingSection").style.display = "none";
+        }
+
+        function showFeedbackForm() {
+            showInitialOptions();
+            document.querySelector(".initial-options").style.display = "none";
+            document.getElementById("feedbackFormSection").style.display = "block";
+            document.getElementById("trackingSection").style.display = "none";
+        }
+
+        function showComplaintForm() {
+             showInitialOptions();
+            document.querySelector(".initial-options").style.display = "none";
+            document.getElementById("complaintFormSection").style.display = "block";
+            document.getElementById("trackingSection").style.display = "none";
+        }
+
+        function showTrackingSection() {
+            document.querySelector(".initial-options").style.display = "none";
+            document.getElementById("feedbackFormSection").style.display = "none";
+            document.getElementById("complaintFormSection").style.display = "none";
+            document.getElementById("trackingSection").style.display = "block";
+        }
+
+        function trackComplaint() {
+            const complaintId = document.getElementById("complaintId").value;
+            // In a real application, you would fetch the complaint status from a database
+            // based on the complaintId.
+            const status = "Received - Under Review"; // Example status
+            document.getElementById("complaintStatus").innerText = `Complaint ID: ${complaintId}\nStatus: ${status}`;
+        }
+
+        function generateComplaintId() {
+            // A simple way to generate a unique ID (you can use a more robust method)
+            return 'CMP-' + Math.random().toString(36).substring(2, 10).toUpperCase();
+        }
+
+        // Add JavaScript to handle form submissions and data validation here
+        document.getElementById("complaintForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent the form from submitting in the traditional way
+
+            // Get form values
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+            const complaintDetails = document.getElementById("complaintDetails").value;
+
+            // Basic validation (you can add more robust validation)
+            if (name === "" || email === "" || complaintDetails === "") {
+                alert("Please fill in all fields.");
+                return;
+            }
+
+            // Generate Complaint ID
+            const complaintId = generateComplaintId();
+
+            // In a real application, you would send this data to a server
+            console.log("Complaint submitted:", { name, email, complaintDetails, complaintId });
+            alert("Complaint submitted successfully! Your Complaint ID is: " + complaintId);
+
+            // Display the Complaint ID
+            document.getElementById("complaintIdDisplay").innerText = "Your Complaint ID is: " + complaintId;
+
+            // Clear the form
+            document.getElementById("complaintForm").reset();
+        });
+
+         document.getElementById("surveyForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const overallSatisfaction = document.querySelector('input[name="overall_satisfaction"]:checked') ? document.querySelector('input[name="overall_satisfaction"]:checked').value : null;
+            const apptSatisfaction = document.querySelector('input[name="appt_satisfaction"]:checked') ? document.querySelector('input[name="appt_satisfaction"]:checked').value : null;
+            const pharmSatisfaction = document.querySelector('input[name="pharm_satisfaction"]:checked') ? document.querySelector('input[name="pharm_satisfaction"]:checked').value : null;
+            const labSatisfaction = document.querySelector('input[name="lab_satisfaction"]:checked') ? document.querySelector('input[name="lab_satisfaction"]:checked').value : null;
+            const emSatisfaction = document.querySelector('input[name="em_satisfaction"]:checked') ? document.querySelector('input[name="em_satisfaction"]:checked').value : null;
+            const onlineSatisfaction = document.querySelector('input[name="online_satisfaction"]:checked') ? document.querySelector('input[name="online_satisfaction"]:checked').value : null;
+            const staffSatisfaction = document.querySelector('input[name="staff_satisfaction"]:checked') ? document.querySelector('input[name="staff_satisfaction"]:checked').value : null;
+            const resolvedSatisfaction = document.querySelector('input[name="resolved_satisfaction"]:checked') ? document.querySelector('input[name="resolved_satisfaction"]:checked').value : null;
+            const waitSatisfaction = document.querySelector('input[name="wait_satisfaction"]:checked') ? document.querySelector('input[name="wait_satisfaction"]:checked').value : null;
+            const communicationSatisfaction = document.querySelector('input[name="communication_satisfaction"]:checked') ? document.querySelector('input[name="communication_satisfaction"]:checked').value : null;
+            const suggestions = document.getElementById("suggestions").value;
+            const likedMost = document.getElementById("likedMost").value;
+            const improvements = document.getElementById("improvements").value;
+
+            if (!overallSatisfaction) {
+                alert("Please rate your overall experience.");
+                return;
+            }
+
+            console.log("Survey submitted:", {
+                overallSatisfaction: overallSatisfaction,
+                apptSatisfaction: apptSatisfaction,
+                pharmSatisfaction: pharmSatisfaction,
+                labSatisfaction: labSatisfaction,
+                emSatisfaction: emSatisfaction,
+                onlineSatisfaction: onlineSatisfaction,
+                staffSatisfaction: staffSatisfaction,
+                resolvedSatisfaction: resolvedSatisfaction,
+                waitSatisfaction: waitSatisfaction,
+                communicationSatisfaction: communicationSatisfaction,
+                suggestions: suggestions,
+                likedMost: likedMost,
+                improvements: improvements
+            });
+
+            alert("Survey submitted successfully! Thank you for your feedback.");
+            document.getElementById("surveyForm").reset();
+        });
+    </script>
+</body>
+</html>

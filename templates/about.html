@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About Us | JEEVAN SETU</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+      }
+
+      .top-left {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        z-index: 10;
+      }
+
+      .top-left img {
+        width: 80px;
+        height: auto;
+      }
+
+      .about-button {
+        margin-top: 10px;
+        padding: 8px 16px;
+        background: #004aad;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: background 0.3s ease;
+        font-size: 14px;
+      }
+
+      .about-button:hover {
+        background: #003080;
+      }
+
+      header {
+        background: #004aad;
+        color: white;
+        padding: 40px 20px;
+        text-align: center;
+      }
+
+      header h1 {
+        margin: 0;
+        font-size: 2.5rem;
+      }
+
+      nav {
+        background: #003080;
+        color: white;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        padding: 10px;
+      }
+
+      nav a {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+      }
+
+      .hero {
+        background-color: #f0f0f0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 40px 20px;
+        text-align: left;
+      }
+
+      .hero-content {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      @media (min-width: 768px) {
+        .hero-content {
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: flex-start;
+        }
+      }
+
+      .hero-left {
+        flex: 1;
+        font-size: 1.6rem;
+        color: #000000;
+      }
+
+      .hero-right {
+        flex: 1;
+        font-size: 1.5rem;
+        color: #333;
+      }
+
+      .section {
+        padding: 40px 20px;
+        max-width: 1200px;
+        margin: auto;
+        font-size: 1.0rem;
+      }
+
+      .section h2 {
+        color: #004aad;
+        margin-bottom: 20px;
+        font-size: 2.2rem; /* Increased font size for the heading */
+      }
+
+      .section p {
+        max-width: 800px;
+        font-size: 1rem;
+      }
+
+      .image-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* Modified grid-template-columns */
+        gap: 10px; /* Reduced gap */
+        margin-top: 30px;
+      }
+
+      .team-member {
+        position: relative;
+        width: 75%;
+        max-width: 75%;
+      }
+
+      .team-member-name {
+        display: block;
+        margin-top: 8px;
+        color: #000; /* Black color */
+        font-weight: bold;
+        font-size: 2rem;
+        text-align: center;
+      }
+
+      .team-member-designation {
+        display: block;
+        margin-top: 3px;
+        color: #808080; /* Grey color */
+        font-size: 1.5rem;
+        text-align: center;
+      }
+
+      .view-bio-link {
+        position: absolute;
+        bottom: 5px;
+        right: 5px;
+        background-color: rgba(0, 74, 173, 0.8);
+        color: white;
+        padding: 5px 8px;
+        border-radius: 3px;
+        text-decoration: none;
+        font-size: 0.7rem;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        cursor: pointer;
+      }
+
+      .team-member:hover .view-bio-link {
+        opacity: 1;
+      }
+
+      .image-grid img {
+        width: 100%;
+        max-width: 90%; /* Reduced max-width slightly */
+        height: auto;
+        border-radius: 8px;
+        transition: transform 0.3s;
+        display: block;
+        margin: 0 auto;
+      }
+
+      /* Modal Styles (for Team Bio Popups) */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.6);
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+      }
+
+      .modal.show {
+        display: block;
+        opacity: 1;
+      }
+
+      .modal-content {
+        background-color: #fff;
+        margin: 5% auto; /* Reduced top margin */
+        padding: 20px;
+        border-radius: 10px;
+        width: 80%; /* Increased width */
+        max-width: 900px; /* Increased max-width */
+        position: relative;
+      }
+
+      .modal-inner-content {
+        display: flex;
+        align-items: flex-start; /* Align items to the top */
+        gap: 30px; /* Increased space between image and text */
+      }
+
+      .modal-image-container {
+        width: 40%; /* Increased width for larger image */
+        max-width: 300px; /* Increased maximum image width */
+      }
+
+      .modal-image-container img {
+        width: 100%;
+        height: auto;
+        border-radius: 8px; /* Optional: Rounded corners for the image */
+      }
+
+      .modal-text-container {
+        width: 60%; /* Adjust text container width */
+      }
+
+      .close {
+        color: #aaa;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      /* Corner-to-corner video styles */
+      #video-section {
+        width: 100%; /* Cover the full width of its parent */
+        height: 500px; /* Set a specific height (adjust as needed) */
+        overflow: hidden; /* Hide any overflow */
+        position: relative; /* Needed for absolute positioning of the video */
+      }
+
+      #video-section video {
+        width: 100%; /* Make the video fill the width of its container */
+        height: auto; /* Allow the height to adjust proportionally */
+        position: absolute; /* Position the video within the section */
+        top: 0;
+        left: 0;
+        object-fit: cover; /* Cover the entire container */
+      }
+
+      /* Mission and Vision side-by-side */
+      .mission-vision-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        max-width: 1200px;
+        margin: auto;
+        padding: 0 20px;
+      }
+
+      .mission-vision-container .section {
+        width: 48%;
+        box-sizing: border-box;
+      }
+
+      /* Our Story, Mission, and Vision - Left, Mid, Right */
+      .story-image-container {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .story-image-container #story {
+        width: 55%; /* Adjust width for text */
+        box-sizing: border-box;
+      }
+
+      .story-image-container img {
+        max-width: 100%; /* Make the image responsive */
+        height: auto;
+        border-radius: 8px; /* Optional: Add rounded corners */
+      }
+
+      /* New Styles */
+      .mission-vision-box {
+        background-color: #f0f0f0; /* Light grey */
+        padding: 20px;
+        margin: 20px auto;
+        border-radius: 8px;
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+      }
+
+      .mission-vision-box .section {
+        width: 48%;
+        box-sizing: border-box;
+      }
+
+      .mission-vision-box p {
+        font-weight: bold; /* Make mission/vision content bold */
+      }
+
+      .core-values-box {
+        margin: 20px;
+        padding: 20px;
+        border-radius: 8px;
+        background-color: #D8BFD8; /* Pinkish Purple */
+        text-align: center; /* Center content horizontally */
+      }
+
+      .core-values-box h3 {
+        color: black;
+        font-weight: bold;
+        font-size: 1.8rem; /* Increased heading font size */
+      }
+
+      .core-values-box p {
+        color: black;
+        font-weight: bold;
+      }
+
+      /* Animation Styles */
+      .animate-on-load {
+        opacity: 0; /* Initially hidden */
+        transform: scale(0.5); /* Initially scaled down */
+        transition: all 0.5s ease-in-out; /* Smooth transition */
+      }
+
+      .initial-popup {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      .animate-on-scroll {
+        opacity: 0; /* Initially hidden */
+        transform: translateY(50px); /* Start from below */
+        transition: all 0.7s ease-in-out;
+      }
+
+      .animate-on-scroll.in-view {
+        opacity: 1;
+        transform: translateY(0); /* Move into view */
+      }
+
+      /* Email Underscore Animation */
+      .email-link {
+        position: relative;
+        text-decoration: none; /* Remove default underline */
+        color: #fff; /* Keep the original color */
+      }
+
+      .email-link::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -2px; /* Adjust for desired underline position */
+        width: 100%;
+        height: 2px; /* Underline thickness */
+        background-color: #fff; /* Underline color */
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.3s ease;
+      }
+
+      .email-link:hover::after {
+        transform: scaleX(1);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="top-left animate-on-load">
+    
+      <img src="{{ url_for('static', filename='jeevan-setu-logo.png') }}" alt="Logo" class="logo-img">
+
+      <a href="about.html" class="about-button">About Us</a>
+    </div>
+
+    <header class="animate-on-load">
+      <h1>JEEVAN SETU</h1>
+      <p>Bridging Healthcare With Technology</p>
+    </header>
+
+    <nav class="animate-on-load">
+      <a href="#story">About</a>
+      <a href="#mission">Mission</a>
+      <a href="#vision">Vision</a>
+    </nav>
+
+    <div class="hero animate-on-scroll">
+      <div class="hero-content">
+        <div class="hero-left">
+          <strong style="font-size: 2.8rem;">
+            "Jeevan Setu is revolutionizing patient-provider communication with a
+            digital-first approach."
+          </strong>
+        </div>
+        <div class="hero-right">
+          </p>
+          We provide a centralized solution where patients can access support,
+          communicate with hospitals, manage prescriptions, and get reliable
+          help — all through one seamless interface. Designed with simplicity
+          and impact in mind, Jeevan Setu is reshaping how healthcare is
+          experienced in the digital age.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <section id="video-section" class="section animate-on-scroll">
+      <video autoplay loop muted>
+        <source src="{{ url_for('static', filename='video.mp4') }}" type="video/mp4">
+        
+        Your browser does not support the video tag.
+      </video>
+    </section>
+
+    <section id="gallery" class="section animate-on-scroll">
+      <h2 style="font-size: 2.5rem;">Meet Our Leadership Team</h2>
+      <div class="image-grid">
+        <!-- Team Member 1 -->
+        <div class="team-member">
+          <img src="{{ url_for('static', filename='team-member-1.jpg') }}" alt="Mr. Sagar Shukla" >
+          
+          
+          <span class="team-member-name animate-on-scroll">Mr. Sagar Shukla</span>
+          <span class="team-member-designation animate-on-scroll">Founder & Vision Architect</span>
+          <a
+            href="https://www.linkedin.com/in/sagar-shukla-76a7a5339?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app "
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <i
+              class="fab fa-linkedin"
+              style="font-size: 1.5rem; color: #0077B5; display: block; text-align: center; margin-top: 5px;"
+            ></i>
+          </a>
+          <a
+            href="#"
+            class="view-bio-link"
+            onclick="openModal('Sagar Shukla'); return false;"
+            >View Full Bio ➔</a
+          >
+        </div>
+
+        <!-- Team Member 2 -->
+        <div class="team-member">
+          <img src="{{ url_for('static', filename='team-member-2.jpg') }}" alt="Mr. Saurabh Tiwari" >
+
+         
+          <span class="team-member-name animate-on-scroll">Mr. Saurabh Tiwari</span>
+          <span class="team-member-designation animate-on-scroll">
+            Technical Lead & Core Developer
+          </span>
+          <a
+            href="https://www.linkedin.com/in/saurabh-tiwari05?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app "
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <i
+              class="fab fa-linkedin"
+              style="font-size: 1.5rem; color: #0077B5; display: block; text-align: center; margin-top: 5px;"
+            ></i>
+          </a>
+          <a
+            href="#"
+            class="view-bio-link"
+            onclick="openModal('Saurabh Tiwari'); return false;"
+            >View Full Bio ➔</a
+          >
+        </div>
+
+        <!-- Team Member 3 -->
+        <div class="team-member">
+          <img src="{{ url_for('static', filename='team-member-3.jpg') }}" alt="Mr. Samarth Sharma" >
+         
+          <span class="team-member-name animate-on-scroll">Mr. Samarth Sharma</span>
+          <span class="team-member-designation animate-on-scroll">
+            UX Developer & Feature Builder
+          </span>
+          <a
+            href="https://www.linkedin.com/in/samarth-sharma-003b0a32a?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app "
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <i
+              class="fab fa-linkedin"
+              style="font-size: 1.5rem; color: #0077B5; display: block; text-align: center; margin-top: 5px;"
+            ></i>
+          </a>
+          <a
+            href="#"
+            class="view-bio-link"
+            onclick="openModal('Samarth Sharma'); return false;"
+            >View Full Bio ➔</a
+          >
+        </div>
+
+        <!-- Team Member 4 -->
+        <div class="team-member">
+          <img src="{{ url_for('static', filename='team-member-4.jpg') }}" alt="Mr. Samarth Khare" >
+
+         
+          <span class="team-member-name animate-on-scroll">Mr. Samarth Khare</span>
+          <span class="team-member-designation animate-on-scroll">
+            Interface Designer & Support Developer
+          </span>
+          <a
+            href="https://www.linkedin.com/in/samarth-khare-6b7796306?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app "
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <i
+              class="fab fa-linkedin"
+              style="font-size: 1.5rem; color: #0077B5; display: block; text-align: center; margin-top: 5px;"
+            ></i>
+          </a>
+          <a
+            href="#"
+            class="view-bio-link"
+            onclick="openModal('Samarth Khare'); return false;"
+            >View Full Bio ➔</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <div class="story-image-container animate-on-scroll">
+      <section id="story" class="section">
+        <h2 style="color: black; font-size: 3.4rem;">
+          A story of transformation and resilience
+        </h2>
+        <p style="font-size: 1.2rem;">
+          JEEVAN SETU began as a college initiative with a vision to create
+          meaningful impact in the lives of people. Our aim is to bridge
+          critical gaps in health, accessibility, and awareness through
+          sustainable and scalable solutions.
+        </p>
+      </section>
+
+      <div class="image-container">
+       
+
+        <img
+        
+          src="{{ url_for('static', filename='photo.jpg') }}"
+          alt="Our Story Image"
+          style="max-width: 100%;"
+        />
+      </div>
+    </div>
+
+    <div class="mission-vision-box animate-on-scroll">
+      <section id="mission" class="section">
+        <h2>Our Mission</h2>
+        <p style="font-size: 1.3rem;">
+          To eliminate the barriers in patient-hospital communication and
+          offer a smart, easy-to-use platform that brings healthcare services
+          within everyone’s reach — through clean technology and thoughtful
+          design.
+        </p>
+      </section>
+
+      <section id="vision" class="section">
+        <h2>Our Vision</h2>
+        <p style="font-size: 1.3rem;">
+          To create a unified healthcare experience where patients no longer
+          struggle with delays, confusion, or lack of access — but instead
+          feel empowered, informed, and supported every step of the way.
+        </p>
+      </section>
+    </div>
+
+    <section class="animate-on-scroll" style="margin: 20px;">
+      <h2
+        style="
+          color: black;
+          font-weight: bold;
+          font-size: 2.7rem;
+          text-align: center;
+        "
+      >
+        Our Strategy
+      </h2>
+      <ul>
+        <li style="font-size: 1.3rem;">
+          Identify common gaps in healthcare access and communication
+        </li>
+        <p> </p>
+        <li style="font-size: 1.3rem;">
+          Build user-centric tools like dashboards, chat assistants, and
+          pharmacy modules
+        </li>
+        <p> </p>
+        <li style="font-size: 1.3rem;">
+          Focus on performance, ease of use, and adaptability
+        </li>
+        <p> </p>
+        <li style="font-size: 1.3rem;">
+          Deliver a platform that works efficiently with minimal tech resources
+        </li>
+      </ul>
+    </section>
+
+    <section class="animate-on-scroll" style="margin: 20px;">
+      <h2
+        style="
+          color: black;
+          font-weight: bold;
+          font-size: 2.7rem;
+          text-align: center;
+        "
+      >
+        What We’re Solving
+      </h2>
+      <li style="font-size: 1.3rem;">
+        Lack of real-time communication between patients and hospitals
+      </li>
+      <p> </p>
+      <li style="font-size: 1.3rem;">
+        Confusion during hospital visits due to unclear processes
+      </li>
+      <p> </p>
+      <li style="font-size: 1.3rem;">
+        Delays in accessing prescriptions and healthcare information
+      </li>
+      <p> </p>
+      <li style="font-size: 1.3rem;">
+        Absence of self-help support for frequently asked queries
+      </li>
+      <br />
+      <p style="font-size: 1.3rem;">
+        Jeevan Setu is the first platform to eliminate communication gaps
+        between patients and healthcare providers.
+      </p>
+    </section>
+
+    <section class="animate-on-scroll" style="margin: 20px;">
+      <h2
+        style="
+          color: black;
+          font-weight: bold;
+          font-size: 2.7rem;
+          text-align: center;
+        "
+      >
+        Technologies We Use
+      </h2>
+      <li style="font-weight: bold; font-size: 1.4rem;">HTML | CSS | MySQL | JS | Python</p>
+        <p> </p>
+        <li style="font-size: 1.3rem;">
+          We’ve built Jeevan Setu using lightweight and robust technologies,
+          ensuring accessibility, efficiency, and long-term scalability.
+        </li>
+    </section>
+
+    <div class="core-values-box animate-on-scroll">
+      <h3 style="font-weight: bold; color: black; font-size: 2.0rem;">
+        Empathy
+      </h3>
+      <p style="font-weight: bold; color: black;">
+        We listen, understand, and care deeply about the people we serve.
+      </p>
+      <h3 style="font-weight: bold; color: black; font-size: 2.0rem;">
+        Integrity
+      </h3>
+      <p style="font-weight: bold; color: black;">
+        We act honestly and ethically, with full transparency in our work.
+      </p>
+      <h3 style="font-weight: bold; color: black; font-size: 2.0rem;">
+        Innovation
+      </h3>
+      <p style="font-weight: bold; color: black;">
+        We believe in thinking differently to find better ways to serve society.
+      </p>
+    </div>
+
+    <!-- Bio Modal (Popup) -->
+    <div id="bioModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal()">×</span>
+        <div class="modal-inner-content">
+          <div class="modal-image-container">
+            <img id="modalImage" src="" alt="Team Member Image" />
+          </div>
+          <div class="modal-text-container">
+            <h3 id="modalTitle">Team Member Bio</h3>
+            <p id="modalContent">Bio content will be loaded here...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section
+      id="contact"
+      class="animate-on-scroll"
+      style="
+        background-color: #000;
+        color: #fff;
+        padding: 20px;
+        text-align: left;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      "
+    >
+      <div style="width: 60%;">
+        <h2>Contact Information</h2>
+        <p>Address: PSIT NH-2 Bhauti Highway, Kanpur Nagar</p>
+        <p>Uttar Pradesh, INDIA</p>
+        <p>Mobile Number: (+91) 93353-72993</p>
+        <p>
+          E-mail:
+          <a href="mailto:jeevansetu2k25@gmail.com" class="email-link"
+            >jeevansetu2k25@gmail.com</a
+          >
+        </p>
+      </div>
+      <img
+      src="{{ url_for('static', filename='jeevan-setu-logo.png') }}"
+        alt="Contact Us Logo"
+        style="width: 35%; max-width: 150px;"
+      />
+    </section>
+
+    <footer>
+      <p>
+        <center>&copy; 2025 JEEVAN SETU. All rights reserved.</center>
+      </p>
+    </footer>
+
+    <script>
+      // Function to check if an element is near the viewport
+      function isNearViewport(element) {
+        const rect = element.getBoundingClientRect();
+        const threshold = 200; // Adjust this value to control when the animation triggers
+
+        return (
+          rect.top <=
+            (window.innerHeight || document.documentElement.clientHeight) +
+              threshold &&
+          rect.bottom >= -threshold
+        );
+      }
+
+      // Function to handle scroll-triggered animations
+      function handleScrollAnimations() {
+        const elements = document.querySelectorAll('.animate-on-scroll');
+        elements.forEach(element => {
+          if (isNearViewport(element)) {
+            element.classList.add('in-view');
+          }
+        });
+      }
+
+      // Function to handle initial popup animation
+      function handleInitialPopup() {
+        const elements = document.querySelectorAll('.animate-on-load');
+        elements.forEach(element => {
+          element.classList.add('initial-popup');
+        });
+      }
+
+      // Event listeners
+      window.addEventListener('load', handleInitialPopup);
+      window.addEventListener('scroll', handleScrollAnimations);
+
+      // Run handleScrollAnimations once on load to catch elements already in view
+      handleScrollAnimations();
+
+      const teamBios = {
+        'Sagar Shukla': {
+          bio:
+            "<b>Mr. Sagar Shukla</b><br><span style='color: grey;'><b>Founder & Vision Architect</b></span><br><br>Every game-changing solution begins with a bold idea — and for Jeevan Setu, that spark came from Sagar Shukla. Driven by a mission to revolutionize how patients access healthcare, Sagar identified a critical gap in the system: a lack of real-time communication, digital assistance, and streamlined services within hospitals. Instead of waiting for someone else to fix it, he took charge.<br><br>With clarity of purpose and a sharp strategic mind, Sagar laid the foundation of Jeevan Setu. He didn’t just envision the platform — he engineered its structure, defined its services, and crafted a user-first experience that reflected empathy, simplicity, and impact.<br><br>Beyond vision, Sagar played a hands-on role in development. Collaborating closely with the tech team, he helped design key modules like the Help Chatbot Assistant and Pharmacy section — ensuring the platform wasn’t just functional, but deeply human-centered.<br><br>As the leader, Sagar brought together a powerhouse team and steered them through every phase — from ideation to execution. His leadership is driven by insight, innovation, and a relentless pursuit of meaningful change in healthcare.",
+          image: 'static/team-member-1.jpg' // Path to Sagar's image
+        },
+        'Saurabh Tiwari': {
+          bio:
+            "<b>Mr. Saurabh Tiwari</b><br><span style='color: grey;'><b>Technical Lead & Core Developer</b></span><br><br>Behind every seamless experience lies a solid technical foundation — and that’s exactly what Saurabh Tiwari built for Jeevan Setu. With a sharp mind for problem-solving and an eye for detail, Saurabh took on the challenge of turning the vision into reality, overseeing both frontend and backend development.<br><br>From developing the database structure in MySQL to ensuring smooth, fast user interactions, Saurabh engineered the platform’s core systems, transforming conceptual ideas into functional, scalable solutions. His expertise and relentless drive to optimize performance ensured that Jeevan Setu would be a reliable, cutting-edge platform for users everywhere.<br><br>A natural leader in his own right, Saurabh’s technical brilliance and commitment to innovation are at the heart of the platform’s success.",
+          image: 'static/team-member-2.jpg' // Path to Saurabh's image
+        },
+        'Samarth Sharma': {
+          bio:
+            "<b>Mr. Samarth Sharma</b><br><span style='color: grey;'><b>UX Developer & Feature Builder</b></span><br><br>True innovation goes beyond functionality — it’s about creating experiences that feel intuitive, human, and effortless. Samarth Sharma did exactly that for Jeevan Setu. With a passion for user experience and design, Samarth took charge of developing key features that would directly impact users — including the Help Chatbot Assistant and Pharmacy section.<br><br>Working closely with Sagar, he ensured that every interaction on the platform was simple, clear, and effective.<br><br>Samarth’s approach to user-centric design has played a pivotal role in ensuring that Jeevan Setu isn’t just a platform, but an experience that truly meets the needs of those it serves.",
+          image: 'static/team-member-3.jpg' // Path to Samarth's image
+        },
+        'Samarth Khare': {
+          bio:
+            "<b>Mr. Samarth Khare</b><br><span style='color: grey;'><b>Interface Designer & Support Developer</b></span><br><br>Every platform needs a visual identity — and that’s where Samarth Khare stepped in. A designer at heart, Samarth brought a sense of clarity and elegance to the Jeevan Setu platform. He designed the Patient Dashboard, ensuring that users would have access to the most important services with a clean and organized interface.<br><br>Samarth’s creativity didn’t just stop at design; he also assisted in coding and development, providing support wherever needed. His ability to balance aesthetics with functionality made him an invaluable asset to the team.<br><br>By combining design with development, Samarth played a crucial role in giving Jeevan Setu its sleek, user-friendly interface, reinforcing the platform’s commitment to simplicity and accessibility.",
+          image: 'static/team-member-4.jpg'// Path to Samarth's image
+        }
+      };
+
+      // Function to open the bio modal
+      function openModal(name) {
+        document.getElementById('bioModal').style.display = 'block';
+        document.getElementById('bioModal').classList.add('show');
+        document.getElementById('modalTitle').innerHTML = name;
+        document.getElementById('modalContent').innerHTML = teamBios[name].bio || 'Bio not available.';
+        document.getElementById('modalImage').src = teamBios[name].image || '';
+      }
+
+      // Function to close the bio modal
+      function closeModal() {
+        document.getElementById('bioModal').classList.remove('show');
+        setTimeout(function () {
+          document.getElementById('bioModal').style.display = 'none';
+        }, 300);
+      }
+
+      // Close the modal if the user clicks outside of it
+      window.onclick = function (event) {
+        const modal = document.getElementById('bioModal');
+        if (event.target == modal) {
+          closeModal();
+        }
+      };
+    </script>
+  </body>
+</html>

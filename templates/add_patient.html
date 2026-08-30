@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Enroll New Patient - Jeevan Setu</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: "Segoe UI", sans-serif;
+        background: linear-gradient(to bottom right, #e0f2ff, #ffffff);
+        color: #333;
+      }
+
+      .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+        opacity: 0;
+        transform: scale(0.9);
+        transition: opacity 0.5s ease, transform 0.5s ease;
+      }
+
+      .container.show {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      .form-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+        width: 100%;
+        padding: 40px;
+      }
+
+      h2 {
+        font-size: 28px;
+        color: #fff;
+        background-color: #0057b7;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        text-align: center;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .form-group.wide {
+        grid-column: span 2;
+      }
+
+      .form-group.half {
+        grid-column: span 1;
+      }
+
+      label {
+        font-weight: 600;
+        margin-bottom: 8px;
+        font-size: 16px;
+      }
+
+      input, select {
+        padding: 12px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        outline: none;
+        transition: border 0.3s;
+      }
+
+      input:focus, select:focus {
+        border-color: #0057b7;
+      }
+
+      .submit-btn {
+        margin-top: 30px;
+        width: 100%;
+        padding: 14px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #fff;
+        background-color: #0057b7;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .submit-btn:hover {
+        background-color: #003e8a;
+      }
+
+      @media (max-width: 600px) {
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+        .form-group.wide {
+          grid-column: span 1;
+        }
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .patient-id {
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333;
+      }
+
+      .enrollment-time {
+        font-size: 14px;
+        font-weight: normal;
+        color: #777;
+        text-align: center;
+      }
+
+      .message-card {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        text-align: center;
+        width: 100%;
+        max-width: 500px;
+      }
+
+      h2 {
+        color: #fff;
+        font-size: 28px;
+        margin-bottom: 20px;
+      }
+
+      .back-btn {
+        padding: 14px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #fff;
+        background-color: #0057b7;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .back-btn:hover {
+        background-color: #003e8a;
+      }
+    </style>
+</head>
+<body>
+
+  <div class="container" id="enrollmentForm">
+    <div class="form-card">
+      <h2>New Patient Enrollment</h2>
+      <div class="patient-id" id="patientIdDisplay"></div>
+      <div class="enrollment-time" id="enrollmentTime"></div>
+      <form id="patientForm" method="POST" action="/enroll_patient">
+        <div class="form-grid">
+          <div class="form-group half">
+            <label for="salutation">Salutation</label>
+            <select id="salutation" name="salutation" required>
+              <option value="">Select</option>
+              <option value="Mr">Mr.</option>
+              <option value="Mrs">Mrs.</option>
+              <option value="Miss">Miss</option>
+              <option value="Master">Master</option>
+              <option value="Dr">Dr.</option>
+              <option value="Ms">Ms.</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group half">
+            <label for="fullName">Full Name</label>
+            <input type="text" id="fullName" name="full_name" required />
+          </div>
+
+          <div class="form-group">
+            <label for="dob">Date of Birth</label>
+            <input type="date" id="dob" name="dob" required onchange="calculateAge()" />
+          </div>
+          <div class="form-group">
+            <label for="age">Age</label>
+            <input type="number" id="age" name="age" required readonly />
+          </div>
+          <div class="form-group half">
+            <label for="gender">Gender</label>
+            <select id="gender" name="gender" required>
+              <option value="">Select</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group half">
+            <label for="contact">Contact Number</label>
+            <input type="tel" id="contact" name="contact" required />
+          </div>
+          <div class="form-group wide">
+            <label for="address">Address</label>
+            <input type="text" id="address" name="address" required />
+          </div>
+          <div class="form-group">
+            <label for="insurancePlan">Insurance Plan</label>
+            <select id="insurancePlan" name="insurance_plan" required>
+              <option value="">Select</option>
+              <option value="No">No</option>
+              <option value="Yes">Yes</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="aadhar">Aadhaar Card Number</label>
+            <input type="text" id="aadhar" name="aadhaar_card" placeholder="Enter Your Aadhaar Number" maxlength="12" required />
+          </div>
+
+          <div id="insuranceFields" class="hidden form-group wide">
+            <label for="insuranceNumber">Insurance Number</label>
+            <input type="text" id="insuranceNumber" name="insurance_number" />
+          </div>
+          <div id="insuranceCompanyField" class="hidden form-group wide">
+            <label for="insuranceCompany">Insurance Company Name</label>
+            <input type="text" id="insuranceCompany" name="insurance_company" />
+          </div>
+        </div>
+        <button type="submit" class="submit-btn">Enroll Patient</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="container hidden" id="successPage">
+    <div class="message-card">
+      <h2>Patient Enrollment Successful</h2>
+      <p id="successMessage"></p>
+      <button class="back-btn" id="backToDashboard">Back to Dashboard</button>
+    </div>
+  </div>
+
+  <script>
+    // Show/Hide insurance fields
+    const insurancePlan = document.getElementById('insurancePlan');
+    const insuranceFields = document.getElementById('insuranceFields');
+    const insuranceCompanyField = document.getElementById('insuranceCompanyField');
+
+    insurancePlan.addEventListener('change', function () {
+      if (this.value === 'Yes') {
+        insuranceFields.classList.remove('hidden');
+        insuranceCompanyField.classList.remove('hidden');
+      } else {
+        insuranceFields.classList.add('hidden');
+        insuranceCompanyField.classList.add('hidden');
+      }
+    });
+
+    // Generate patient ID in the format PAT-XXXXXX
+    function generatePatientId() {
+      const randomSixDigits = Math.floor(100000 + Math.random() * 900000);
+      return `PAT-${randomSixDigits}`;
+    }
+
+    // Display current date and time
+    function displayEnrollmentTime() {
+      const currentDate = new Date();
+      const dateString = currentDate.toLocaleString();
+      document.getElementById("enrollmentTime").textContent = `Enrollment Time: ${dateString}`;
+    }
+
+    // Calculate age from DOB
+    function calculateAge() {
+      const dob = document.getElementById("dob").value;
+      if (!dob) {
+        document.getElementById("age").value = "";
+        return;
+      }
+      const birthDate = new Date(dob);
+      const today = new Date();
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+      document.getElementById("age").value = age;
+    }
+
+    // Handle form submission
+    const form = document.getElementById("patientForm");
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      const fullName = document.getElementById("fullName").value;
+      const dob = document.getElementById("dob").value;
+      const age = document.getElementById("age").value;
+      const patientId = generatePatientId();
+
+      sessionStorage.setItem("patientName", fullName);
+      sessionStorage.setItem("patientId", patientId);
+
+      document.getElementById("enrollmentForm").classList.add("hidden");
+      document.getElementById("successPage").classList.remove("hidden");
+
+      const successMessage = `${fullName} with Patient ID: ${patientId} has been enrolled successfully.`;
+      document.getElementById("successMessage").textContent = successMessage;
+    });
+
+    // Display patient ID and current time
+    const patientId = generatePatientId();
+    document.getElementById("patientIdDisplay").textContent = `Generated Patient ID: ${patientId}`;
+
+    displayEnrollmentTime();
+
+    document.getElementById('backToDashboard').addEventListener('click', () => {
+        document.getElementById("enrollmentForm").classList.remove("hidden");
+        document.getElementById("successPage").classList.add("hidden");
+        document.getElementById("patientForm").reset();
+        document.getElementById("patientIdDisplay").textContent = ``;
+        document.getElementById("enrollmentTime").textContent = ``;
+    });
+
+    window.addEventListener('load', () => {
+      document.getElementById("enrollmentForm").classList.add("show");
+    });
+  </script>
+</body>
+</html>
